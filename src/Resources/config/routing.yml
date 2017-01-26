@@ -1,0 +1,4 @@
+netosoft_domain:
+    resource: "@NetosoftDomainBundle/Controller"
+    type:     annotation
+

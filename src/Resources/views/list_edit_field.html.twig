@@ -1,0 +1,23 @@
+{% extends admin.getTemplate('base_list_field') %}
+
+{# @var admin \Sonata\AdminBundle\Admin\AdminInterface #}
+
+{% block field %}
+    {% set xEditableType = field_description.type|sonata_xeditable_type %}
+    {% set url = path('netosoft_domain_admin_edit_field',
+        admin.getPersistentParameters|default([])|merge({
+        'field': field_description.name,
+        'objectId': admin.id(object),
+        'code': admin.code(object),
+        'commandClass': field_description.options.commandClass,
+        })
+    ) %}
+    <span class="x-editable"
+          data-type="{{ xEditableType }}"
+          data-value="{{ field_description.type == 'date' and value is not empty ? value.format('Y-m-d') : value }}"
+          data-title="{{ field_description.label|trans({}, field_description.translationDomain) }}"
+          data-pk="{{ admin.id(object) }}"
+          data-url="{{ url }}">
+        {{ parent() }}
+    </span>
+{% endblock %}

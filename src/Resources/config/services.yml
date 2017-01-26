@@ -1,0 +1,93 @@
+services:
+    netosoft_domain.repository.command_log:
+        class: "%netosoft_domain.repository.command_log.class%"
+        factory: ["@doctrine", "getRepository"]
+        arguments:
+            - "%netosoft_domain.entity.command_log.class%"
+
+    netosoft_domain.chain_handler:
+        class: Netosoft\DomainBundle\Domain\ChainHandler
+
+    netosoft_domain.handler:
+        class: Netosoft\DomainBundle\Domain\LogHandler
+        autowiring_types: Netosoft\DomainBundle\Domain\HandlerInterface
+        autowire: true
+        arguments:
+            0: "@doctrine.orm.entity_manager"
+            1: "@monolog.logger.command_log"
+        calls:
+            - ['setDecoratedHandler', ['@netosoft_domain.chain_handler']]
+
+    netosoft_domain.handler_configurator:
+        class: Netosoft\DomainBundle\Domain\HandlerConfigurator
+        autowire: true
+
+    netosoft_domain.command_logger:
+        class: Netosoft\DomainBundle\Domain\Logger\CommandLogger
+        autowire: true
+        arguments:
+            2: "@netosoft_domain.default_command_logger"
+
+    netosoft_domain.original_default_command_logger:
+        class: Netosoft\DomainBundle\Domain\Logger\DefaultCommandLogger
+        autowire: true
+
+    netosoft_domain.none_logger:
+        class: Netosoft\DomainBundle\Domain\Logger\NoneLogger
+        autowire: true
+
+    netosoft_domain.logger_utils:
+        public: false
+        class: Netosoft\DomainBundle\Domain\Utils\LoggerUtils
+        autowire: true
+        arguments:
+            0: "@netosoft_domain.cache_logger_utils"
+
+    netosoft_domain.security_utils:
+        public: false
+        class: Netosoft\DomainBundle\Domain\Utils\SecurityUtils
+        autowire: true
+
+    netosoft_domain.validator_utils:
+        public: false
+        class: Netosoft\DomainBundle\Domain\Utils\ValidatorUtils
+        autowire: true
+
+    netosoft_domain.handler.edit_field:
+        public: false
+        class: Netosoft\DomainBundle\Domain\Handler\EditFieldHandler
+        autowire: true
+        arguments:
+            0: "@doctrine.orm.default_entity_manager"
+        tags:
+            - {name: "netosoft_domain.handler"}
+
+    netosoft_domain.action.helper:
+        class: Netosoft\DomainBundle\Action\ActionHelper
+        autowire: true
+
+    netosoft_domain.form.select_command_log_command_class:
+        class: Netosoft\DomainBundle\Form\Type\SelectCommandLogCommandClassType
+        autowire: true
+        tags:
+            - {name: form.type}
+
+    netosoft_domain.form.select_command_log:
+        class: Netosoft\DomainBundle\Form\Type\SelectCommandLogTypeType
+        autowire: true
+        tags:
+            - {name: form.type}
+
+    netosoft_domain.action.admin_command_form:
+        class: Netosoft\DomainBundle\Action\AdminCommandFormAction
+        autowire: true
+
+    netosoft_domain.action.delete:
+        class: Netosoft\DomainBundle\Action\DeleteAction
+        autowire: true
+
+    netosoft_domain.handler_helper:
+        class: Netosoft\DomainBundle\Domain\Handler\HandlerHelper
+        autowire: true
+        arguments:
+            0: '@doctrine.orm.default_entity_manager'

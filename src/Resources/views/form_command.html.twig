@@ -1,0 +1,56 @@
+{% extends base_template %}
+
+{% block title %}
+    {% if object is defined and admin.id(object) is not null %}
+        {{ "title_edit"|trans({'%name%': admin.toString(object)|truncate(15) }, 'SonataAdminBundle') }}
+    {% elseif action == 'create' %}
+        {{ "title_create"|trans({}, 'SonataAdminBundle') }}
+    {% endif %}
+{% endblock %}
+
+{% block navbar_title %}
+    {{ block('title') }}
+{% endblock %}
+
+{%- block actions -%}
+{%- endblock -%}
+
+{% block tab_menu %}
+    {{ knp_menu_render(admin.sidemenu(action), {'currentClass' : 'active', 'template': sonata_admin.adminPool.getTemplate('tab_menu_template')}, 'twig') }}
+{% endblock %}
+
+{% block form %}
+    {{ form_start(form) }}
+
+    {{ include('SonataAdminBundle:Helper:render_form_dismissable_errors.html.twig') }}
+
+    {% block box_form %}
+        <div class="box box-default">
+            <div class="box-header">
+                {% block box_form_header %}
+                    <h4 class="box-title">
+                        {% block box_form_title %}{{ box_title|default('') }}{% endblock %}
+                    </h4>
+                {% endblock %}
+            </div>
+            <div class="box-body">
+                <div class="sonata-ba-collapsed-fields">
+                    {% block box_form_body %}
+                        {{ form_widget(form.command) }}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block form_actions %}
+        <div class="sonata-ba-form-actions well well-small form-actions">
+            {% block sonata_form_actions %}
+                {{ form_widget(form.actions) }}
+            {% endblock %}
+        </div>
+    {% endblock form_actions %}
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}
