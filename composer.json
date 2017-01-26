@@ -19,11 +19,15 @@
   },
   "autoload": {
     "psr-4": {
-      "Netosoft\\DomainBundle\\": "src/",
-      "Tests\\Unit\\Netosoft\\DomainBundle\\": "tests/Unit"
+      "Netosoft\\DomainBundle\\": "src/"
     },
     "files": [
       "src/Utils/functions.php"
     ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Unit\\Netosoft\\DomainBundle\\": "tests/Unit"
+    }
   }
 }
