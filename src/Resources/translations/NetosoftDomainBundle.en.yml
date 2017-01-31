@@ -1,0 +1,3 @@
+edit_field_form:
+    success_message: The object has been updated
+    modal_title: Edit

@@ -1,23 +1,37 @@
 {% extends admin.getTemplate('base_list_field') %}
 
+{# @var object #}
+{# @var field_description \Sonata\AdminBundle\Admin\FieldDescriptionInterface #}
 {# @var admin \Sonata\AdminBundle\Admin\AdminInterface #}
 
 {% block field %}
-    {% set xEditableType = field_description.type|sonata_xeditable_type %}
-    {% set url = path('netosoft_domain_admin_edit_field',
-        admin.getPersistentParameters|default([])|merge({
-        'field': field_description.name,
-        'objectId': admin.id(object),
-        'code': admin.code(object),
-        'commandClass': field_description.options.commandClass,
-        })
-    ) %}
-    <span class="x-editable"
-          data-type="{{ xEditableType }}"
-          data-value="{{ field_description.type == 'date' and value is not empty ? value.format('Y-m-d') : value }}"
-          data-title="{{ field_description.label|trans({}, field_description.translationDomain) }}"
-          data-pk="{{ admin.id(object) }}"
-          data-url="{{ url }}">
-        {{ parent() }}
-    </span>
+    {% set mode = field_description.options.mode|default('x-editable') %}
+    {% if mode == 'x-editable' %}
+        {% set xEditableType = field_description.type|sonata_xeditable_type %}
+        {% set url = path('netosoft_domain_admin_edit_field',
+            admin.getPersistentParameters|default([])|merge({
+            'field': field_description.name,
+            'objectId': admin.id(object),
+            'code': admin.code(object),
+            'commandClass': field_description.options.commandClass,
+            })
+        ) %}
+        <span class="x-editable"
+              data-type="{{ xEditableType }}"
+              data-value="{{ field_description.type == 'date' and value is not empty ? value.format('Y-m-d') : value }}"
+              data-title="{{ field_description.label|trans({}, field_description.translationDomain) }}"
+              data-pk="{{ admin.id(object) }}"
+              data-url="{{ url }}">
+            {{ parent() }}
+        </span>
+    {% elseif mode == 'modal' %}
+        {% set url = admin.generateObjectUrl('fieldForm', object, {field: field_description.name}) %}
+        {% set renderFieldUrl = admin.generateObjectUrl('renderFieldList', object, {field: field_description.name}) %}
+        <span
+           class="x-modal-form"
+           data-url="{{ url }}"
+           data-render-field-url="{{ renderFieldUrl }}"
+           data-reload-selector="closest:td"
+        >{{ parent() }}</span>
+    {% endif %}
 {% endblock %}

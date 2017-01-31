@@ -86,7 +86,7 @@ class ActionHelper
         return $admin->getTemplate('layout');
     }
 
-    public function adminRender(Request $request, AdminInterface $admin, $view, array $parameters = [], Response $response = null)
+    public function adminRender(Request $request = null, AdminInterface $admin, $view, array $parameters = [], Response $response = null)
     {
         if (!$this->isXmlHttpRequest($request)) {
             $parameters['breadcrumbs_builder'] = $this->breadcrumbsBuilder;

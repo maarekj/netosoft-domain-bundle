@@ -43,7 +43,7 @@ class AdminCommandFormAction
         $resolverHelper->defineGetObject($this->resolver, 'get_object');
         $resolverHelper->defineSuccessResponse($this->resolver, 'success_response', 'redirect_list');
         $resolverHelper->defineCommandForm($this->resolver, 'command_form');
-        $resolverHelper->defineCommandFormOptions($this->resolver, 'command_form');
+        $resolverHelper->defineCommandFormOptions($this->resolver, 'command_form_options');
 
         $this->resolver
             ->setDefault('configure_actions_form', function (FormBuilderInterface $form, $options, $args) {
@@ -122,9 +122,11 @@ class AdminCommandFormAction
                 $returned = $command->getReturnValue();
                 $args['returned'] = $returned;
 
-                $this->helper->addTrFlash('sonata_flash_success', $options['flash_success'], [
-                    '%name%' => $options['to_string']($returned),
-                ], $options['flash_translation_domain']);
+                if (null !== ($flashSuccess = $options['flash_success'])) {
+                    $this->helper->addTrFlash('sonata_flash_success', $options['flash_success'], [
+                        '%name%' => $options['to_string']($returned),
+                    ], $options['flash_translation_domain']);
+                }
 
                 return $options['success_response']($options, $args);
             } catch (\Exception $exception) {

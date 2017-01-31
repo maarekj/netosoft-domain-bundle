@@ -83,6 +83,18 @@ abstract class AbstractEditField implements CommandInterface
     }
 
     /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getValue()

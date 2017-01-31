@@ -21,9 +21,9 @@ class ResolverHelper
     public function defineCommandFormOptions(OptionsResolver $resolver, string $key)
     {
         $resolver
-            ->setDefault('command_form_options', [])
-            ->setAllowedTypes('command_form_options', ['array', 'callable'])
-            ->setNormalizer('command_form_options', function (Options $options, $value) {
+            ->setDefault($key, [])
+            ->setAllowedTypes($key, ['array', 'callable'])
+            ->setNormalizer($key, function (Options $options, $value) {
                 return is_array($value) ? $this->createIdentity($value) : $value;
             });
     }

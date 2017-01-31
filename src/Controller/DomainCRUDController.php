@@ -7,6 +7,7 @@ use Netosoft\DomainBundle\Form\Type\CreateSubmitType;
 use Netosoft\DomainBundle\Form\Type\EditSubmitType;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class DomainCRUDController extends CRUDController
 {
@@ -55,6 +56,26 @@ class DomainCRUDController extends CRUDController
                 $form->add('submit', EditSubmitType::class);
             },
         ], $this->getAdmin()->getDomainConfig('edit')));
+    }
+
+    public function fieldFormAction(Request $request)
+    {
+        $action = $this->get('netosoft_domain.action.edit_field_form');
+        $field = $request->get('field');
+
+        return $action->handle(array_merge([
+            'request' => $request,
+            'admin' => $this->getAdmin(),
+        ], $this->getAdmin()->getFieldForm($field)));
+    }
+
+    public function renderFieldListAction(Request $request)
+    {
+        $action = $this->get('netosoft_domain.action.render_field_list');
+        $id = $request->get($this->getAdmin()->getIdParameter());
+        $field = $request->get('field');
+
+        return $action->handle($id, $field, $this->getAdmin());
     }
 
     public function getAdmin(): AbstractDomainAdmin

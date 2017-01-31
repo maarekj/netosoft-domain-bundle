@@ -4,6 +4,7 @@ services:
         factory: ["@doctrine", "getRepository"]
         arguments:
             - "%netosoft_domain.entity.command_log.class%"
+            - "log_handler"
 
     netosoft_domain.chain_handler:
         class: Netosoft\DomainBundle\Domain\ChainHandler
@@ -13,7 +14,7 @@ services:
         autowiring_types: Netosoft\DomainBundle\Domain\HandlerInterface
         autowire: true
         arguments:
-            0: "@doctrine.orm.entity_manager"
+            0: "@doctrine.orm.log_handler_entity_manager"
             1: "@monolog.logger.command_log"
         calls:
             - ['setDecoratedHandler', ['@netosoft_domain.chain_handler']]
@@ -84,6 +85,14 @@ services:
 
     netosoft_domain.action.delete:
         class: Netosoft\DomainBundle\Action\DeleteAction
+        autowire: true
+
+    netosoft_domain.action.edit_field_form:
+        class: Netosoft\DomainBundle\Action\EditFieldFormAction
+        autowire: true
+
+    netosoft_domain.action.render_field_list:
+        class: Netosoft\DomainBundle\Action\RenderFieldListAction
         autowire: true
 
     netosoft_domain.handler_helper:

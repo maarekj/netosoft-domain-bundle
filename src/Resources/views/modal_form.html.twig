@@ -1,0 +1,45 @@
+{% extends '@NetosoftDomain/empty.html.twig' %}
+
+{# @var exception \Exception #}
+{# @var form \Symfony\Component\Form\FormView #}
+{# @var status string #}
+{# @var modal_title string #}
+{# @var success_message string #}
+{# @var error_form string #}
+
+{% block root %}
+    {% if status == 'success' %}
+        <div class="modal-content">
+            {{ block('modalHeader') }}
+            <div class="modal-body">
+                <div class="alert alert-success">{{ success_message }}</div>
+            </div>
+        </div>
+    {% else %}
+        <div class="modal-content">
+            {{ form_start(form) }}
+            {{ block('modalHeader') }}
+            <div class="modal-body">
+                {% if error_form is not empty %}
+                    <div class="alert alert-error">{{ error_form }}</div>
+                {% endif %}
+                {% if exception is not null %}
+                    <div class="alert alert-error">{{ exception.message }}</div>
+                {% endif %}
+                {{ form_widget(form.command) }}
+            </div>
+            <div class="modal-footer">
+                {{ form_widget(form.actions) }}
+            </div>
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block modalHeader %}
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{ modal_title }}</h4>
+    </div>
+{% endblock %}
