@@ -28,18 +28,14 @@ const configureModalForm = function ($modal, content, successCallback) {
     });
 };
 
-export default function($parent, {onSuccess}) {
-    $parent.find('.x-modal-form').each((i, element) => {
-        const $target = jq(element);
-        if ($target.html().trim() == '') {
-            $target.addClass('x-modal-form-editable-empty');
-            $target.append('<i class="fa fa-pencil"></i>');
-        }
-    });
+export default function($target, {onSuccess}) {
+    if ($target.html().trim() == '') {
+        $target.addClass('x-modal-form-editable-empty');
+        $target.append('<i class="fa fa-pencil"></i>');
+    }
 
-    $parent.find('.x-modal-form').on('click', (event) => {
+    $target.on('click', (event) => {
         event.preventDefault();
-        const $target = jq(event.delegateTarget);
 
         const $modal = jq(`
             <div class="modal fade">

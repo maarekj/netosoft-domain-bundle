@@ -116,10 +116,10 @@ class EditFieldFormAction
                 $args['returned'] = $returned;
                 $success = true;
                 $status = 'success';
-            } catch (\Exception $exception) {
-                $this->logger->error($exception->getMessage(), ['exception' => $exception]);
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage(), ['exception' => $exception]);
                 $success = false;
-                $exception->getMessage();
+                $exception = $e;
                 $status = 'error-exception';
             }
         }

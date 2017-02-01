@@ -2,6 +2,7 @@
 
 namespace Netosoft\DomainBundle\Domain\Handler;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Netosoft\DomainBundle\Domain\CommandInterface;
 use Netosoft\DomainBundle\Domain\Utils\SecurityUtils;
@@ -10,8 +11,8 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class HandlerHelper
 {
-    /** @var EntityManager */
-    private $manager;
+    /** @var Registry */
+    private $doctrine;
 
     /** @var ValidatorUtils */
     private $validatorUtils;
@@ -19,9 +20,9 @@ class HandlerHelper
     /** @var SecurityUtils */
     private $securityUtils;
 
-    public function __construct(EntityManager $manager, ValidatorUtils $validatorUtils, SecurityUtils $securityUtils)
+    public function __construct(Registry $doctrine, ValidatorUtils $validatorUtils, SecurityUtils $securityUtils)
     {
-        $this->manager = $manager;
+        $this->doctrine = $doctrine;
         $this->validatorUtils = $validatorUtils;
         $this->securityUtils = $securityUtils;
     }
@@ -37,8 +38,9 @@ class HandlerHelper
 
         $this->validatorUtils->validateOrThrow($entity, null, $validationGroups);
 
-        $this->manager->persist($entity);
-        $this->manager->flush();
+        $manager = $this->getManager();
+        $manager->persist($entity);
+        $manager->flush();
 
         $command->setReturnValue($entity);
     }
@@ -51,13 +53,15 @@ class HandlerHelper
         }
         $this->validatorUtils->validateOrThrow($command);
 
-        $this->manager->beginTransaction();
+        $manager = $this->getManager();
+        $manager->beginTransaction();
         try {
             if ($preRemove !== null) {
                 $preRemove($command, $entity);
             }
-            $this->manager->remove($entity);
-            $this->manager->commit();
+            $manager->remove($entity);
+            $manager->flush();
+            $manager->commit();
 
             $command->setReturnValue($entity);
 
@@ -65,9 +69,22 @@ class HandlerHelper
                 $postRemove($command, $entity);
             }
         } catch (\Exception $e) {
-            $this->manager->rollback();
+            $manager->rollback();
             throw $e;
         }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return EntityManager
+     */
+    public function getManager(string $name = null)
+    {
+        /** @var EntityManager $manager */
+        $manager = $this->doctrine->getManager($name);
+
+        return $manager;
     }
 
     public function createGetter($path): callable

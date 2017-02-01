@@ -29,8 +29,9 @@
         {% set renderFieldUrl = admin.generateObjectUrl('renderFieldList', object, {field: field_description.name}) %}
         <span
            class="x-modal-form"
+           data-toggle="x-modal-form"
            data-url="{{ url }}"
-           data-render-field-url="{{ renderFieldUrl }}"
+           data-reload-url="{{ renderFieldUrl }}"
            data-reload-selector="closest:td"
         >{{ parent() }}</span>
     {% endif %}

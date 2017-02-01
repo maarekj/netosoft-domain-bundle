@@ -19,9 +19,10 @@ abstract class AbstractDomainAdmin extends AbstractAdmin
 
     public function configure()
     {
-        $this->setTemplate('form_command', 'NetosoftDomainBundle::form_command.html.twig');
-        $this->setTemplate('create', 'NetosoftDomainBundle::form_command.html.twig');
-        $this->setTemplate('edit', 'NetosoftDomainBundle::form_command.html.twig');
+        $this->setTemplate('form_command', '@NetosoftDomain/form_command.html.twig');
+        $this->setTemplate('create', '@NetosoftDomain/form_command.html.twig');
+        $this->setTemplate('edit', '@NetosoftDomain/form_command.html.twig');
+        $this->setTemplate('modal', '@NetosoftDomain/modal_form.html.twig');
     }
 
     protected function configureRoutes(RouteCollection $collection)

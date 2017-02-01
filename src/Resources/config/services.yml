@@ -98,5 +98,3 @@ services:
     netosoft_domain.handler_helper:
         class: Netosoft\DomainBundle\Domain\Handler\HandlerHelper
         autowire: true
-        arguments:
-            0: '@doctrine.orm.default_entity_manager'

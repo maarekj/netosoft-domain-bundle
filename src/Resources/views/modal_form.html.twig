@@ -12,7 +12,7 @@
         <div class="modal-content">
             {{ block('modalHeader') }}
             <div class="modal-body">
-                <div class="alert alert-success">{{ success_message }}</div>
+                <div class="alert alert-success">{{ success_message|default('') }}</div>
             </div>
         </div>
     {% else %}
@@ -21,7 +21,7 @@
             {{ block('modalHeader') }}
             <div class="modal-body">
                 {% if error_form is not empty %}
-                    <div class="alert alert-error">{{ error_form }}</div>
+                    <div class="alert alert-error">{{ error_form|nl2br }}</div>
                 {% endif %}
                 {% if exception is not null %}
                     <div class="alert alert-error">{{ exception.message }}</div>
@@ -40,6 +40,6 @@
 {% block modalHeader %}
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">{{ modal_title }}</h4>
+        <h4 class="modal-title">{{ modal_title|default('') }}</h4>
     </div>
 {% endblock %}
