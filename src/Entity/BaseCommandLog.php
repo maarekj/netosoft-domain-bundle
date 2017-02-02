@@ -39,7 +39,7 @@ abstract class BaseCommandLog implements CommandLogInterface
 
     /**
      * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=1000, nullable=true)
      */
     protected $message;
 
@@ -87,7 +87,7 @@ abstract class BaseCommandLog implements CommandLogInterface
 
     /**
      * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $exceptionMessage;
 
@@ -196,7 +196,7 @@ abstract class BaseCommandLog implements CommandLogInterface
     /** {@inheritdoc} */
     public function setMessage($message)
     {
-        $this->message = $message;
+        $this->message = substr($message, 0, 1000);
 
         return $this;
     }
