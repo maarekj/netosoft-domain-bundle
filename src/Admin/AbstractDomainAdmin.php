@@ -90,4 +90,11 @@ abstract class AbstractDomainAdmin extends AbstractAdmin
 
         return $this;
     }
+
+    protected function configureBatchActions($actions)
+    {
+        unset($actions['delete']);
+
+        return $actions;
+    }
 }
