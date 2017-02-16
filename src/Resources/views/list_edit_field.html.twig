@@ -38,5 +38,4 @@
     {% elseif mode == 'simple' %}
         {% set content = block('field_content') %}{{ content is empty ? parent() : content|raw }}
     {% endif %}
-    {% dump %}
 {% endblock %}
