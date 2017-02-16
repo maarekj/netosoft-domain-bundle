@@ -22,7 +22,8 @@
               data-title="{{ field_description.label|trans({}, field_description.translationDomain) }}"
               data-pk="{{ admin.id(object) }}"
               data-url="{{ url }}">
-            {{ parent() }}
+            {% set content = block('field_content') %}
+            {{ content is empty ? parent() : content|raw }}
         </span>
     {% elseif mode == 'modal' %}
         {% set url = admin.generateObjectUrl('fieldForm', object, {field: field_description.name}) %}
@@ -33,6 +34,9 @@
            data-url="{{ url }}"
            data-reload-url="{{ renderFieldUrl }}"
            data-reload-selector="closest:td"
-        >{{ parent() }}</span>
+        >{% set content = block('field_content') %}{{ content is empty ? parent() : content|raw }}</span>
+    {% elseif mode == 'simple' %}
+        {% set content = block('field_content') %}{{ content is empty ? parent() : content|raw }}
     {% endif %}
+    {% dump %}
 {% endblock %}
