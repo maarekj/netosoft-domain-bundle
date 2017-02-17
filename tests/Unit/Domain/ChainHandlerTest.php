@@ -9,7 +9,6 @@ use Tests\Unit\Netosoft\DomainBundle\Fixture\Command1;
 use Tests\Unit\Netosoft\DomainBundle\Fixture\Command2;
 use Tests\Unit\Netosoft\DomainBundle\Fixture\Command3;
 
-
 class ChainHandlerTest extends \PHPUnit_Framework_TestCase
 {
     /** @var ChainHandler */

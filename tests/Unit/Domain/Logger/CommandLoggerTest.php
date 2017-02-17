@@ -10,7 +10,6 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-
 class AbstractCommandFixutre implements CommandInterface
 {
     public $id;

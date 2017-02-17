@@ -14,7 +14,6 @@ class BaseCommand implements CommandInterface
         $this->id = $id;
     }
 
-
     public function getReturnValue()
     {
         $this->returnValue;

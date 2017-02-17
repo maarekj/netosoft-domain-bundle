@@ -119,7 +119,8 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
         $this->handler->handle($command);
     }
 
-    public function mockCommandLog(string $message) {
+    public function mockCommandLog(string $message)
+    {
         return $this->createConfiguredMock(CommandLogInterface::class, [
             'getMessage' => $message,
             'getCommandData' => ['message' => $message],
