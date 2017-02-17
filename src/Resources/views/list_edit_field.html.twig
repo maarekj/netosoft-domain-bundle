@@ -16,14 +16,17 @@
             'commandClass': field_description.options.commandClass,
             })
         ) %}
-        <span class="x-editable"
-              data-type="{{ xEditableType }}"
-              data-value="{{ field_description.type == 'date' and value is not empty ? value.format('Y-m-d') : value }}"
-              data-title="{{ field_description.label|trans({}, field_description.translationDomain) }}"
-              data-pk="{{ admin.id(object) }}"
-              data-url="{{ url }}">
-            {% set content = block('field_content') %}
-            {{ content is empty ? parent() : content|raw }}
+        <span
+            {% block field_span_attributes %}
+                class="x-editable"
+                data-type="{{ xEditableType }}"
+                data-value="{{ field_description.type == 'date' and value is not empty ? value.format('Y-m-d') : value }}"
+                data-title="{{ field_description.label|trans({}, field_description.translationDomain) }}"
+                data-pk="{{ admin.id(object) }}"
+                data-url="{{ url }}"
+            {% endblock %}
+        >
+            {{- block('field_content') -}}
         </span>
     {% elseif mode == 'modal' %}
         {% set url = admin.generateObjectUrl('fieldForm', object, {field: field_description.name}) %}
@@ -34,8 +37,12 @@
            data-url="{{ url }}"
            data-reload-url="{{ renderFieldUrl }}"
            data-reload-selector="closest:td"
-        >{% set content = block('field_content') %}{{ content is empty ? parent() : content|raw }}</span>
+        >{{- block('field_content') -}}</span>
     {% elseif mode == 'simple' %}
-        {% set content = block('field_content') %}{{ content is empty ? parent() : content|raw }}
+        {{- block('field_content') -}}
     {% endif %}
 {% endblock %}
+
+{%- block field_content -%}
+    {{ value }}
+{%- endblock -%}

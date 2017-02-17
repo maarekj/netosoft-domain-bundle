@@ -1,0 +1,22 @@
+{% extends '@NetosoftDomain/list_edit_field.html.twig' %}
+
+{# @var object #}
+{# @var field_description \Sonata\AdminBundle\Admin\FieldDescriptionInterface #}
+{# @var admin \Sonata\AdminBundle\Admin\AdminInterface #}
+
+{% block field_span_attributes %}
+    {% spaceless %}
+        {{ parent() }}
+        data-source="[{value: 0, text: '{%- trans from 'SonataAdminBundle' %}label_type_no{% endtrans -%}'},{value: 1, text: '{%- trans from 'SonataAdminBundle' %}label_type_yes{% endtrans -%}'}]"
+    {% endspaceless %}
+{% endblock %}
+
+{% block field_content %}
+    {% spaceless %}
+        {% if value %}
+            <span class="label label-success">{%- trans from 'SonataAdminBundle' %}label_type_yes{% endtrans -%}</span>
+        {% else %}
+            <span class="label label-danger">{%- trans from 'SonataAdminBundle' %}label_type_no{% endtrans -%}</span>
+        {% endif %}
+    {% endspaceless %}
+{% endblock %}
