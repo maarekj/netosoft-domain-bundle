@@ -2,6 +2,7 @@
 
 namespace Netosoft\DomainBundle\Domain\Utils;
 
+use Netosoft\DomainBundle\Domain\Logger\Annotation\LogCollectionFields;
 use Netosoft\DomainBundle\Domain\Logger\Annotation\LogFields;
 use Netosoft\DomainBundle\Domain\Logger\Annotation\LogMessage;
 use Netosoft\DomainBundle\Domain\Logger\ExpressionLanguageProvider;
@@ -38,13 +39,26 @@ class LoggerUtils
         foreach ($class->getProperties() as $property) {
             /** @var LogFields|null $logFieldsAnnot */
             $logFieldsAnnot = $this->annotationReader->getPropertyAnnotation($property, LogFields::class);
+
+            /** @var LogCollectionFields|null $logCollectionFieldsAnnot */
+            $logCollectionFieldsAnnot = $this->annotationReader->getPropertyAnnotation($property, LogCollectionFields::class);
+
             if ($logFieldsAnnot !== null) {
                 $object = $this->getValue($command, $property);
                 if ($object === null) {
                     $array[$property->getName()] = null;
                 } else {
-                    $array[$property->getName()] = $this->logFields($object, $logFieldsAnnot);
+                    $array[$property->getName()] = $this->logFields($object, $logFieldsAnnot->fields);
                 }
+            } elseif ($logCollectionFieldsAnnot !== null) {
+                $collection = $this->getValue($command, $property);
+                $row = [];
+                if ($collection !== null) {
+                    foreach ($collection as $object) {
+                        $row[] = $this->logFields($object, $logCollectionFieldsAnnot->fields);
+                    }
+                }
+                $array[$property->getName()] = $row;
             } else {
                 $array[$property->getName()] = $this->getValue($command, $property);
             }
@@ -64,11 +78,17 @@ class LoggerUtils
         return $array;
     }
 
-    protected function logFields($object, LogFields $annot): array
+    /**
+     * @param  mixed     $object
+     * @param string[] $fields
+     *
+     * @return array
+     */
+    protected function logFields($object, array $fields): array
     {
         $array = [];
 
-        foreach ($annot->fields as $field) {
+        foreach ($fields as $field) {
             $array[$field] = $this->getValue($object, $field);
         }
 
@@ -77,7 +97,7 @@ class LoggerUtils
 
     /**
      * @param mixed               $object
-     * @param \ReflectionProperty $property
+     * @param string|\ReflectionProperty $property
      *
      * @return mixed
      */
