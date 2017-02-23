@@ -6,13 +6,16 @@
 {# @var modal_title string #}
 {# @var success_message string #}
 {# @var error_form string #}
+{# @var message string|null #}
 
 {% block root %}
     {% if status == 'success' %}
         <div class="modal-content">
             {{ block('modalHeader') }}
             <div class="modal-body">
-                <div class="alert alert-success">{{ success_message|default('') }}</div>
+                {% block modalBodySuccess %}
+                    <div class="alert alert-success">{{ success_message|default('') }}</div>
+                {% endblock %}
             </div>
         </div>
     {% else %}
@@ -20,16 +23,23 @@
             {{ form_start(form) }}
             {{ block('modalHeader') }}
             <div class="modal-body">
-                {% if error_form is not empty %}
-                    <div class="alert alert-error">{{ error_form|nl2br }}</div>
-                {% endif %}
-                {% if exception is not null %}
-                    <div class="alert alert-error">{{ exception.message }}</div>
-                {% endif %}
-                {{ form_widget(form.command) }}
+                {% block modalBody %}
+                    {% if error_form is not empty %}
+                        <div class="alert alert-error">{{ error_form|nl2br }}</div>
+                    {% endif %}
+                    {% if exception is not null %}
+                        <div class="alert alert-error">{{ exception.message }}</div>
+                    {% endif %}
+                    {% if message is not empty %}
+                        <div>{{ message }}</div>
+                    {% endif %}
+                    {{ form_widget(form.command) }}
+                {% endblock %}
             </div>
             <div class="modal-footer">
-                {{ form_widget(form.actions) }}
+                {% block modalFooter %}
+                    {{ form_widget(form.actions) }}
+                {% endblock %}
             </div>
             {{ form_rest(form) }}
             {{ form_end(form) }}

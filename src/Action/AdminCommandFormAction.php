@@ -103,7 +103,7 @@ class AdminCommandFormAction
 
         /** @var CommandInterface $command */
         $command = $options['command']($options, $args);
-        $args['command'] = $args;
+        $args['command'] = $command;
 
         $admin->checkAccess($options['action']);
 

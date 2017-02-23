@@ -83,6 +83,10 @@ services:
         class: Netosoft\DomainBundle\Action\AdminCommandFormAction
         autowire: true
 
+    netosoft_domain.action.base_command_form:
+        class: Netosoft\DomainBundle\Action\BaseCommandFormAction
+        autowire: true
+
     netosoft_domain.action.delete:
         class: Netosoft\DomainBundle\Action\DeleteAction
         autowire: true
