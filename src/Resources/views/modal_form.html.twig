@@ -30,7 +30,7 @@
                     {% if exception is not null %}
                         <div class="alert alert-error">{{ exception.message }}</div>
                     {% endif %}
-                    {% if message is not empty %}
+                    {% if message|default(null) is not empty %}
                         <div>{{ message }}</div>
                     {% endif %}
                     {{ form_widget(form.command) }}
