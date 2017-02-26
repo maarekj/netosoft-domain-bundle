@@ -5,7 +5,7 @@ export default function({$element, url, onReady}) {
     jq.ajax({url, method: 'GET'}).then((content) => {
         const $content = jq(content);
         onReady($content);
-        $element.replaceWith($content);
+        $element.html($content);
         $element.removeClass('loading');
     });
 };
