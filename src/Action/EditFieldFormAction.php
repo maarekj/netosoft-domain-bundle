@@ -78,10 +78,10 @@ class EditFieldFormAction
         /** @var AdminInterface $admin */
         $admin = $options['admin'];
 
-        $admin->checkAccess($options['check_access']);
-
         $object = $this->helper->getAdminObjectOrNotFound($request, $admin);
         $args['object'] = $object;
+
+        $admin->checkAccess($options['check_access'], $object);
 
         /** @var AbstractEditField $command */
         $command = new $options['command_class']($object, null);

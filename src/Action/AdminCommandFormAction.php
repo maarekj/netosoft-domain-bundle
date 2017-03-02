@@ -105,7 +105,7 @@ class AdminCommandFormAction
         $command = $options['command']($options, $args);
         $args['command'] = $command;
 
-        $admin->checkAccess($options['action']);
+        $admin->checkAccess($options['action'], $object);
 
         $formBuilder = $this->helper->createFormBuilder(['command' => $command])
             ->add('command', $options['command_form']($command, $options, $args), $options['command_form_options']($command, $options, $args))
