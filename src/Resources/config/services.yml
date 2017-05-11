@@ -27,7 +27,9 @@ services:
         class: Netosoft\DomainBundle\Domain\Logger\CommandLogger
         autowire: true
         arguments:
-            2: "@netosoft_domain.default_command_logger"
+            - "@service_container"
+            - "@annotations.reader"
+            - "@netosoft_domain.default_command_logger"
 
     netosoft_domain.original_default_command_logger:
         class: Netosoft\DomainBundle\Domain\Logger\DefaultCommandLogger

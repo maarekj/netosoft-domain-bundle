@@ -14,7 +14,7 @@ class HandlerConfigurator
         $this->container = $container;
     }
 
-    public function configureHandler(HandlerInterface $handler)
+    public function configureHandler($handler)
     {
         if ($handler instanceof HandlerAwareInterface) {
             $handler->setDomainHandler($this->container->get('netosoft_domain.handler'));
