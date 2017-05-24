@@ -2,16 +2,16 @@
 
 namespace Netosoft\DomainBundle\Domain\Handler;
 
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManager;
 use Netosoft\DomainBundle\Domain\CommandInterface;
 use Netosoft\DomainBundle\Domain\Utils\SecurityUtils;
 use Netosoft\DomainBundle\Domain\Utils\ValidatorUtils;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class HandlerHelper
 {
-    /** @var Registry */
+    /** @var RegistryInterface */
     private $doctrine;
 
     /** @var ValidatorUtils */
@@ -20,7 +20,7 @@ class HandlerHelper
     /** @var SecurityUtils */
     private $securityUtils;
 
-    public function __construct(Registry $doctrine, ValidatorUtils $validatorUtils, SecurityUtils $securityUtils)
+    public function __construct(RegistryInterface $doctrine, ValidatorUtils $validatorUtils, SecurityUtils $securityUtils)
     {
         $this->doctrine = $doctrine;
         $this->validatorUtils = $validatorUtils;
@@ -54,23 +54,17 @@ class HandlerHelper
         $this->validatorUtils->validateOrThrow($command);
 
         $manager = $this->getManager();
-        $manager->beginTransaction();
-        try {
-            if ($preRemove !== null) {
-                $preRemove($command, $entity);
-            }
-            $manager->remove($entity);
-            $manager->flush();
-            $manager->commit();
 
-            $command->setReturnValue($entity);
+        if ($preRemove !== null) {
+            $preRemove($command, $entity);
+        }
+        $manager->remove($entity);
+        $manager->flush();
 
-            if ($postRemove != null) {
-                $postRemove($command, $entity);
-            }
-        } catch (\Exception $e) {
-            $manager->rollback();
-            throw $e;
+        $command->setReturnValue($entity);
+
+        if ($postRemove != null) {
+            $postRemove($command, $entity);
         }
     }
 
