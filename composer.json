@@ -10,7 +10,7 @@
   "require": {
     "symfony/symfony": "~3.2",
     "doctrine/orm": "~2.5",
-    "sonata-project/admin-bundle": "^3.10",
+    "sonata-project/admin-bundle": "^3.17",
     "psr/log": "^1.0.2"
   },
   "require-dev": {
