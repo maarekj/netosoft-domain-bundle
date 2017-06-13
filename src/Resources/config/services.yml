@@ -11,13 +11,15 @@ services:
 
     netosoft_domain.handler:
         class: Netosoft\DomainBundle\Domain\LogHandler
-        autowiring_types: Netosoft\DomainBundle\Domain\HandlerInterface
         autowire: true
         arguments:
             0: "@doctrine.orm.log_handler_entity_manager"
             1: "@monolog.logger.command_log"
         calls:
             - ['setDecoratedHandler', ['@netosoft_domain.chain_handler']]
+
+    Netosoft\DomainBundle\Domain\HandlerInterface:
+        alias: netosoft_domain.handler
 
     netosoft_domain.handler_configurator:
         class: Netosoft\DomainBundle\Domain\HandlerConfigurator
