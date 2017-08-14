@@ -36,6 +36,9 @@ class HandlerHelper
 
         $entity = $getCallable($command);
 
+        if ($validationGroups instanceof \Closure) {
+            $validationGroups = $validationGroups($entity);
+        }
         $this->validatorUtils->validateOrThrow($entity, null, $validationGroups);
 
         $manager = $this->getManager();
