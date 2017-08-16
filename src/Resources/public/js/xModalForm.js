@@ -52,6 +52,10 @@ export default function($target, {onSuccess, onModalLoaded}) {
         `);
         jq('body').append($modal);
         $modal.modal();
+        $modal.on('hidden.bs.modal', (event) => {
+           $modal.remove();
+        });
+
         setLoading($modal);
 
         jq.ajax({url: $target.data('url'), method: 'GET'}).then(({content}) => {
