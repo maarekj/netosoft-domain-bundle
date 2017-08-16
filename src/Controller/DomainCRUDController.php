@@ -58,6 +58,25 @@ class DomainCRUDController extends CRUDController
         ], $this->getAdmin()->getDomainConfig('edit')));
     }
 
+    public function domainAction(Request $request)
+    {
+        $action = $this->get('netosoft_domain.action.admin_command_form');
+
+        return $action->handle(array_merge([
+            'request' => $this->getRequest(),
+            'admin' => $this->getAdmin(),
+            'action' => 'edit',
+            'template_key' => 'edit',
+            'box_title' => 'box.edit_title',
+            'get_object' => 'from_request',
+            'flash_success' => 'flash_edit_success',
+            'success_response' => 'redirect_edit',
+            'configure_actions_form' => function (FormBuilderInterface $form, $options, $args) {
+                $form->add('submit', EditSubmitType::class);
+            },
+        ], $this->getAdmin()->getDomainConfig($request->get('action'))));
+    }
+
     public function fieldFormAction(Request $request)
     {
         $action = $this->get('netosoft_domain.action.edit_field_form');
@@ -76,6 +95,14 @@ class DomainCRUDController extends CRUDController
         $field = $request->get('field');
 
         return $action->handle($id, $field, $this->getAdmin());
+    }
+
+    public function renderRowAction(Request $request)
+    {
+        $action = $this->get('netosoft_domain.action.render_row');
+        $id = $request->get($this->getAdmin()->getIdParameter());
+
+        return $action->handle($id, $this->getAdmin());
     }
 
     public function getAdmin(): AbstractDomainAdmin

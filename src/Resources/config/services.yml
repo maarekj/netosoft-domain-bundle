@@ -103,6 +103,10 @@ services:
         class: Netosoft\DomainBundle\Action\RenderFieldListAction
         autowire: true
 
+    netosoft_domain.action.render_row:
+        class: Netosoft\DomainBundle\Action\RenderRowAction
+        autowire: true
+
     netosoft_domain.handler_helper:
         class: Netosoft\DomainBundle\Domain\Handler\HandlerHelper
         autowire: true
