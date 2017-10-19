@@ -2,80 +2,16 @@
 
 namespace Tests\Unit\Netosoft\DomainBundle\Domain\Logger;
 
-use Netosoft\DomainBundle\Domain\CommandInterface;
-use Netosoft\DomainBundle\Domain\CommandLoggerInterface;
 use Netosoft\DomainBundle\Domain\Logger\CommandLogger;
-use Netosoft\DomainBundle\Domain\Logger\Annotation\CommandLogger as CommandLoggerAnnotation;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
-class AbstractCommandFixutre implements CommandInterface
-{
-    public $id;
-    protected $returnValue;
-
-    public function __construct($id)
-    {
-        $this->id = $id;
-    }
-
-    public function getReturnValue()
-    {
-        return $this->returnValue;
-    }
-
-    public function setReturnValue($returnValue)
-    {
-        $this->returnValue = $returnValue;
-
-        return $this;
-    }
-}
-
-class CommandFixtureA extends AbstractCommandFixutre
-{
-}
-
-/**
- * @CommandLoggerAnnotation()
- */
-class CommandFixtureB extends AbstractCommandFixutre
-{
-}
-
-/**
- * @CommandLoggerAnnotation(service="logger_c")
- */
-class CommandFixtureC extends AbstractCommandFixutre
-{
-}
-
-class FallbackLogger implements CommandLoggerInterface
-{
-    /**
-     * @param CommandInterface|AbstractCommandFixutre $command
-     *
-     * @return array
-     */
-    public function log(CommandInterface $command): array
-    {
-        return ['fallback' => $command->id];
-    }
-}
-
-class LoggerC implements CommandLoggerInterface
-{
-    /**
-     * @param CommandInterface|AbstractCommandFixutre $command
-     *
-     * @return array
-     */
-    public function log(CommandInterface $command): array
-    {
-        return ['c' => $command->id];
-    }
-}
+use Tests\Unit\Netosoft\DomainBundle\Domain\Logger\Fixture\CommandFixtureA;
+use Tests\Unit\Netosoft\DomainBundle\Domain\Logger\Fixture\CommandFixtureB;
+use Tests\Unit\Netosoft\DomainBundle\Domain\Logger\Fixture\CommandFixtureC;
+use Tests\Unit\Netosoft\DomainBundle\Domain\Logger\Fixture\CommandFixtureNotLog;
+use Tests\Unit\Netosoft\DomainBundle\Domain\Logger\Fixture\FallbackLogger;
+use Tests\Unit\Netosoft\DomainBundle\Domain\Logger\Fixture\LoggerC;
 
 class CommandLoggerTest extends \PHPUnit_Framework_TestCase
 {
@@ -91,6 +27,14 @@ class CommandLoggerTest extends \PHPUnit_Framework_TestCase
         $this->container->set('logger_c', new LoggerC());
 
         $this->logger = new CommandLogger($this->container, new AnnotationReader(), new FallbackLogger());
+    }
+
+    public function testMustLog()
+    {
+        $this->assertTrue($this->logger->mustLog(new CommandFixtureA(1)));
+        $this->assertTrue($this->logger->mustLog(new CommandFixtureB(1)));
+        $this->assertTrue($this->logger->mustLog(new CommandFixtureC(1)));
+        $this->assertFalse($this->logger->mustLog(new CommandFixtureNotLog(1)));
     }
 
     /**

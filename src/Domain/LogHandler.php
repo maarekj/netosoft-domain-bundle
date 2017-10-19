@@ -2,6 +2,7 @@
 
 namespace Netosoft\DomainBundle\Domain;
 
+use Netosoft\DomainBundle\Domain\Logger\CommandLogger;
 use Netosoft\DomainBundle\Entity\CommandLogInterface;
 use Netosoft\DomainBundle\Entity\CommandLogRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,6 +25,9 @@ class LogHandler implements HandlerInterface
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var CommandLogger */
+    private $commandLogger;
+
     /**
      * LogHandler constructor.
      *
@@ -31,11 +35,12 @@ class LogHandler implements HandlerInterface
      * @param CommandLogRepositoryInterface $commandLogRepo
      * @param LoggerInterface               $logger
      */
-    public function __construct(EntityManagerInterface $manager, LoggerInterface $logger, CommandLogRepositoryInterface $commandLogRepo)
+    public function __construct(EntityManagerInterface $manager, LoggerInterface $logger, CommandLogRepositoryInterface $commandLogRepo, CommandLogger $commandLogger)
     {
         $this->manager = $manager;
         $this->commandLogRepo = $commandLogRepo;
         $this->logger = $logger;
+        $this->commandLogger = $commandLogger;
     }
 
     public function setDecoratedHandler(HandlerInterface $decorated)
@@ -52,15 +57,19 @@ class LogHandler implements HandlerInterface
     /** {@inheritdoc} */
     public function handle(CommandInterface $command)
     {
-        $commandLog = $this->logCommand($command, CommandLogInterface::TYPE_BEFORE_HANDLER);
-        try {
-            $return = $this->decorated->handle($command);
-            $this->logCommand($command, CommandLogInterface::TYPE_AFTER_HANDLER, $commandLog);
+        if (false === $this->commandLogger->mustLog($command)) {
+            return $this->decorated->handle($command);
+        } else {
+            $commandLog = $this->logCommand($command, CommandLogInterface::TYPE_BEFORE_HANDLER);
+            try {
+                $return = $this->decorated->handle($command);
+                $this->logCommand($command, CommandLogInterface::TYPE_AFTER_HANDLER, $commandLog);
 
-            return $return;
-        } catch (\Throwable $e) {
-            $this->logCommand($command, CommandLogInterface::TYPE_EXCEPTION, $commandLog, $e);
-            throw ($e instanceof \Exception ? $e : new \RuntimeException($e));
+                return $return;
+            } catch (\Throwable $e) {
+                $this->logCommand($command, CommandLogInterface::TYPE_EXCEPTION, $commandLog, $e);
+                throw ($e instanceof \Exception ? $e : new \RuntimeException($e));
+            }
         }
     }
 

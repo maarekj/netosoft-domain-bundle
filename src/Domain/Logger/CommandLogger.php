@@ -5,6 +5,7 @@ namespace Netosoft\DomainBundle\Domain\Logger;
 use Netosoft\DomainBundle\Domain\CommandInterface;
 use Netosoft\DomainBundle\Domain\CommandLoggerInterface;
 use Netosoft\DomainBundle\Domain\Logger\Annotation\CommandLogger as CommandLoggerAnnotation;
+use Netosoft\DomainBundle\Domain\Logger\Annotation\NotLog;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -24,6 +25,15 @@ class CommandLogger implements CommandLoggerInterface
         $this->container = $container;
         $this->annotationReader = $annotationReader;
         $this->loggerFallback = $loggerFallback;
+    }
+
+    public function mustLog(CommandInterface $command): bool
+    {
+        $refClass = new \ReflectionClass($command);
+
+        $annotation = $this->annotationReader->getClassAnnotation($refClass, NotLog::class);
+
+        return $annotation === null;
     }
 
     /** {@inheritdoc} */

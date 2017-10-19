@@ -3,6 +3,7 @@
 namespace Tests\Unit\Netosoft\DomainBundle\Domain;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Netosoft\DomainBundle\Domain\Logger\CommandLogger;
 use Netosoft\DomainBundle\Domain\LogHandler;
 use Netosoft\DomainBundle\Entity\CommandLogInterface;
 use Netosoft\DomainBundle\Entity\CommandLogRepositoryInterface;
@@ -24,6 +25,9 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
     /** @var CommandLogRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $repo;
 
+    /** @var CommandLogger|\PHPUnit_Framework_MockObject_MockObject */
+    protected $commandLogger;
+
     /** @var Command1Handler|\PHPUnit_Framework_MockObject_MockObject */
     private $decoratedHandler;
 
@@ -35,9 +39,10 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
         $this->manager = $this->createMock(EntityManagerInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->repo = $this->createMock(CommandLogRepositoryInterface::class);
+        $this->commandLogger = $this->createMock(CommandLogger::class);
         $this->decoratedHandler = $this->createPartialMock(Command1Handler::class, ['handle']);
 
-        $this->handler = new LogHandler($this->manager, $this->logger, $this->repo);
+        $this->handler = new LogHandler($this->manager, $this->logger, $this->repo, $this->commandLogger);
         $this->handler->setDecoratedHandler($this->decoratedHandler);
     }
 
@@ -56,6 +61,12 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandle_withSuccess()
     {
         $command = new Command1();
+
+        $this->commandLogger
+            ->expects($this->once())
+            ->method("mustLog")
+            ->with($command)
+            ->willReturn(true);
 
         $this->repo
             ->expects($this->at(0))
@@ -82,6 +93,53 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
         $this->handler->handle($command);
     }
 
+    public function testHandle_withSuccess_whenMustLogIsFalse()
+    {
+        $command = new Command1();
+
+        $this->commandLogger
+            ->expects($this->once())
+            ->method("mustLog")
+            ->with($command)
+            ->willReturn(false);
+
+        $this->repo->expects($this->never())->method('createEntity');
+        $this->decoratedHandler->expects($this->once())->method('handle')->with($command);
+
+        $this->logger->expects($this->never())->method('info');
+        $this->logger->expects($this->never())->method('error');
+
+        $this->handler->handle($command);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage exception message
+     */
+    public function testHandle_withError_whenMustLogIsFalse()
+    {
+        $command = new Command1();
+
+        $this->commandLogger
+            ->expects($this->once())
+            ->method("mustLog")
+            ->with($command)
+            ->willReturn(false);
+
+        $this->decoratedHandler
+            ->expects($this->once())
+            ->method('handle')
+            ->with($command)
+            ->willThrowException($exception = new \InvalidArgumentException('exception message'));
+
+        $this->repo->expects($this->never())->method('createEntity');
+
+        $this->logger->expects($this->never())->method('info');
+        $this->logger->expects($this->never())->method('error');
+
+        $this->handler->handle($command);
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage exception message
@@ -89,6 +147,12 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandle_withError()
     {
         $command = new Command1();
+
+        $this->commandLogger
+            ->expects($this->once())
+            ->method("mustLog")
+            ->with($command)
+            ->willReturn(true);
 
         $this->decoratedHandler
             ->expects($this->once())
