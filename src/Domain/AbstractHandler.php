@@ -8,16 +8,16 @@ namespace Netosoft\DomainBundle\Domain;
 abstract class AbstractHandler implements HandlerInterface
 {
     /** @var string */
-    protected $acceptedCommandClass;
+    private $acceptedCommandClasses;
 
     /**
      * AbstractHandler constructor.
      *
-     * @param string $acceptedCommandClass
+     * @param string[]|array|string $acceptedCommandClasses
      */
-    public function __construct(string $acceptedCommandClass)
+    public function __construct($acceptedCommandClasses)
     {
-        $this->acceptedCommandClass = $acceptedCommandClass;
+        $this->acceptedCommandClasses = (array) $acceptedCommandClasses;
     }
 
     /**
@@ -27,7 +27,12 @@ abstract class AbstractHandler implements HandlerInterface
      */
     public function acceptCommand(CommandInterface $command): bool
     {
-        return $command instanceof $this->acceptedCommandClass;
+        foreach ($this->acceptedCommandClasses as $class) {
+            if (true === $command instanceof $class) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
