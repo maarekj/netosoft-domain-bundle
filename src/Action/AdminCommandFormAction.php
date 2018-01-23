@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,6 +80,19 @@ class AdminCommandFormAction
 
                 return $admin->getTranslationDomain();
             });
+
+        $this->resolver
+            ->setRequired('handle')
+            ->setAllowedTypes('handle', 'callable')
+            ->setDefault('handle', function (Options $options) {
+                return function (self $action, FormInterface $form, array $options, array $args) {
+                    if ($form->isSubmitted() && $form->isValid()) {
+                        return $action->handleSubmit($form, $options, $args);
+                    } else {
+                        return $action->defaultResponse($options, $args, $form, false, null, $form->isSubmitted(), $form->isValid(), null);
+                    }
+                };
+            });
     }
 
     /**
@@ -94,11 +108,13 @@ class AdminCommandFormAction
 
         /** @var Request $request */
         $request = $options['request'];
+        $args['request'] = $request;
 
         /** @var AdminInterface $admin */
         $admin = $options['admin'];
+        $args['admin'] = $admin;
 
-        $object = $options['get_object'] !== null ? $options['get_object']($options) : null;
+        $object = null !== $options['get_object'] ? $options['get_object']($options) : null;
         $args['object'] = $object;
 
         /** @var CommandInterface $command */
@@ -119,7 +135,24 @@ class AdminCommandFormAction
 
         $form->handleRequest($request);
 
-        $modeModal = $request->isXmlHttpRequest() || $request->get('mode') === 'modal';
+        return $options['handle']($this, $form, $options, $args);
+    }
+
+    public function handleSubmit(FormInterface $form, array $options, array $args)
+    {
+        /** @var Request $request */
+        $request = $args['request'];
+
+        /** @var AdminInterface $admin */
+        $admin = $args['admin'];
+
+        /** @var CommandInterface $command */
+        $command = $args['command'];
+
+        /** @var object $object */
+        $object = $args['object'];
+
+        $modeModal = $request->isXmlHttpRequest() || 'modal' === $request->get('mode');
         $flashSuccess = $options['flash_success'];
 
         $success = false;
@@ -127,6 +160,7 @@ class AdminCommandFormAction
         $isSubmitted = $form->isSubmitted();
         $isValid = $form->isValid();
         $status = !$isSubmitted ? 'default' : (!$isValid ? 'error-form' : 'valid');
+
         if ($isSubmitted && $isValid) {
             try {
                 $this->handler->handle($command);
@@ -156,6 +190,36 @@ class AdminCommandFormAction
             }
         }
 
+        return $this->defaultResponse($options, $args, $form, $success, $exception, $isSubmitted, $isValid, $status);
+    }
+
+    public function defaultResponse(
+        array $options,
+        array $args,
+        FormInterface $form,
+        bool $success = false,
+        $exception = null,
+        bool $isSubmitted = false,
+        bool $isValid = false,
+        string $status = null
+    ) {
+        /** @var Request $request */
+        $request = $args['request'];
+
+        /** @var AdminInterface $admin */
+        $admin = $args['admin'];
+
+        /** @var CommandInterface $command */
+        $command = $args['command'];
+
+        /** @var object $object */
+        $object = $args['object'];
+
+        $modeModal = $request->isXmlHttpRequest() || 'modal' === $request->get('mode');
+        $flashSuccess = $options['flash_success'];
+
+        $status = null === $status ? !$isSubmitted ? 'default' : (!$isValid ? 'error-form' : 'valid') : $status;
+
         $templateParams = [
             'action' => $options['action'],
             'command' => $command,
@@ -170,7 +234,7 @@ class AdminCommandFormAction
         if ($modeModal) {
             $templateParams['modal_title'] = $this->getBoxTitle($options);
 
-            if ($success && $flashSuccess !== null) {
+            if ($success && null !== $flashSuccess) {
                 $templateParams['success_message'] = $this->helper->trans($flashSuccess, [
                     '%name%' => $options['to_string']($command->getReturnValue()),
                 ], $options['flash_translation_domain']);

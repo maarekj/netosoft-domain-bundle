@@ -67,9 +67,12 @@ services:
         tags:
             - {name: "netosoft_domain.handler"}
 
-    netosoft_domain.action.helper:
+    Netosoft\DomainBundle\Action\ActionHelper:
         class: Netosoft\DomainBundle\Action\ActionHelper
         autowire: true
+
+    netosoft_domain.action.helper:
+        alias: Netosoft\DomainBundle\Action\ActionHelper
 
     netosoft_domain.form.select_command_log_command_class:
         class: Netosoft\DomainBundle\Form\Type\SelectCommandLogCommandClassType
