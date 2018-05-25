@@ -89,7 +89,16 @@ class AdminCommandFormAction
                     if ($form->isSubmitted() && $form->isValid()) {
                         return $action->handleSubmit($form, $options, $args);
                     } else {
-                        return $action->defaultResponse($options, $args, $form, false, null, $form->isSubmitted(), $form->isValid(), null);
+                        return $action->defaultResponse(
+                            $options,
+                            $args,
+                            $form,
+                            false,
+                            null,
+                            $form->isSubmitted(),
+                            $form->isSubmitted() && $form->isValid(),
+                            null
+                        );
                     }
                 };
             });
@@ -158,7 +167,7 @@ class AdminCommandFormAction
         $success = false;
         $exception = null;
         $isSubmitted = $form->isSubmitted();
-        $isValid = $form->isValid();
+        $isValid = $form->isSubmitted() && $form->isValid();
         $status = !$isSubmitted ? 'default' : (!$isValid ? 'error-form' : 'valid');
 
         if ($isSubmitted && $isValid) {
@@ -185,7 +194,7 @@ class AdminCommandFormAction
                 $status = 'error-exception';
 
                 if (!$modeModal) {
-                    $this->helper->addFlash('sonata_flash_error', nl2br($e->getMessage()));
+                    $this->helper->addFlash('sonata_flash_error', \nl2br($e->getMessage()));
                 }
             }
         }

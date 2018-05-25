@@ -5,12 +5,15 @@ namespace Netosoft\DomainBundle\Action;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Admin\BreadcrumbsBuilderInterface;
 use Sonata\AdminBundle\Admin\Pool;
+use Symfony\Bridge\Twig\AppVariable;
+use Symfony\Bridge\Twig\Command\DebugCommand;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Form\TwigRenderer;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormRenderer;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,7 +64,7 @@ class ActionHelper
         $object = $admin->getObject($id);
 
         if (!$object) {
-            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
+            throw new NotFoundHttpException(\sprintf('unable to find the object with id : %s', $id));
         }
 
         return $object;
@@ -153,12 +156,22 @@ class ActionHelper
     public function createAdminFormView(FormInterface $form, $theme): FormView
     {
         $formView = $form->createView();
-        try {
-            $this->twig->getRuntime(TwigRenderer::class)->setTheme($formView, $theme);
-        } catch (\Twig_Error_Runtime $e) {
-            // BC for Symfony < 3.2 where this runtime not exists
+
+        // BC for Symfony < 3.2 where this runtime does not exists
+        if (!\method_exists(AppVariable::class, 'getToken')) {
             $this->twig->getExtension(FormExtension::class)->renderer->setTheme($formView, $theme);
+
+            return $formView;
         }
+
+        // BC for Symfony < 3.4 where runtime should be TwigRenderer
+        if (!\method_exists(DebugCommand::class, 'getLoaderPaths')) {
+            $this->twig->getRuntime(TwigRenderer::class)->setTheme($formView, $theme);
+
+            return $formView;
+        }
+
+        $this->twig->getRuntime(FormRenderer::class)->setTheme($formView, $theme);
 
         return $formView;
     }
@@ -177,7 +190,7 @@ class ActionHelper
      */
     public function escapeHtml($s)
     {
-        return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        return \htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     /**

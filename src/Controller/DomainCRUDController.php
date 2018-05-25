@@ -2,6 +2,11 @@
 
 namespace Netosoft\DomainBundle\Controller;
 
+use Netosoft\DomainBundle\Action\AdminCommandFormAction;
+use Netosoft\DomainBundle\Action\DeleteAction;
+use Netosoft\DomainBundle\Action\EditFieldFormAction;
+use Netosoft\DomainBundle\Action\RenderFieldListAction;
+use Netosoft\DomainBundle\Action\RenderRowAction;
 use Netosoft\DomainBundle\Admin\AbstractDomainAdmin;
 use Netosoft\DomainBundle\Form\Type\CreateSubmitType;
 use Netosoft\DomainBundle\Form\Type\EditSubmitType;
@@ -13,7 +18,7 @@ class DomainCRUDController extends CRUDController
 {
     public function deleteAction($id)
     {
-        $action = $this->get('netosoft_domain.action.delete');
+        $action = $this->get(DeleteAction::class);
 
         return $action->handle(array_merge([
             'request' => $this->getRequest(),
@@ -23,7 +28,7 @@ class DomainCRUDController extends CRUDController
 
     public function createAction()
     {
-        $action = $this->get('netosoft_domain.action.admin_command_form');
+        $action = $this->get(AdminCommandFormAction::class);
 
         return $action->handle(array_merge([
             'request' => $this->getRequest(),
@@ -41,7 +46,7 @@ class DomainCRUDController extends CRUDController
 
     public function editAction($id = null)
     {
-        $action = $this->get('netosoft_domain.action.admin_command_form');
+        $action = $this->get(AdminCommandFormAction::class);
 
         return $action->handle(array_merge([
             'request' => $this->getRequest(),
@@ -60,7 +65,7 @@ class DomainCRUDController extends CRUDController
 
     public function domainAction(Request $request)
     {
-        $action = $this->get('netosoft_domain.action.admin_command_form');
+        $action = $this->get(AdminCommandFormAction::class);
 
         return $action->handle(array_merge([
             'request' => $this->getRequest(),
@@ -79,7 +84,7 @@ class DomainCRUDController extends CRUDController
 
     public function fieldFormAction(Request $request)
     {
-        $action = $this->get('netosoft_domain.action.edit_field_form');
+        $action = $this->get(EditFieldFormAction::class);
         $field = $request->get('field');
 
         return $action->handle(array_merge([
@@ -90,7 +95,7 @@ class DomainCRUDController extends CRUDController
 
     public function renderFieldListAction(Request $request)
     {
-        $action = $this->get('netosoft_domain.action.render_field_list');
+        $action = $this->get(RenderFieldListAction::class);
         $id = $request->get($this->getAdmin()->getIdParameter());
         $field = $request->get('field');
 
@@ -99,7 +104,7 @@ class DomainCRUDController extends CRUDController
 
     public function renderRowAction(Request $request)
     {
-        $action = $this->get('netosoft_domain.action.render_row');
+        $action = $this->get(RenderRowAction::class);
         $id = $request->get($this->getAdmin()->getIdParameter());
 
         return $action->handle($id, $this->getAdmin());
