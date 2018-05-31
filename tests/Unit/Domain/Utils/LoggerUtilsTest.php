@@ -2,139 +2,14 @@
 
 namespace Tests\Unit\Netosoft\DomainBundle\Domain\Utils;
 
-use Netosoft\DomainBundle\Domain\Logger\Annotation\LogFields;
-use Netosoft\DomainBundle\Domain\Logger\Annotation\LogMessage;
 use Netosoft\DomainBundle\Domain\Logger\ExpressionLanguageProvider;
 use Netosoft\DomainBundle\Domain\Utils\LoggerUtils;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
-
-/**
- * @LogMessage(expression="error.onExpression(r) ~ 'error'")
- */
-class SimpleObject
-{
-    protected $field1;
-    protected $field2;
-
-    public function __construct($field1, $field2)
-    {
-        $this->field1 = $field1;
-        $this->field2 = $field2;
-    }
-
-    public function getField1()
-    {
-        return $this->field1;
-    }
-
-    public function getField2()
-    {
-        return $this->field2;
-    }
-}
-
-class ObjectWithNested
-{
-    /**  @LogFields(fields={"field1", "field2"}) */
-    protected $simpleObject;
-
-    protected $field1;
-
-    protected $field2;
-
-    public function __construct(SimpleObject $simpleObject = null, $field1, $field2)
-    {
-        $this->simpleObject = $simpleObject;
-        $this->field1 = $field1;
-        $this->field2 = $field2;
-    }
-
-    public function getSimpleObject()
-    {
-        return $this->simpleObject;
-    }
-
-    public function getField1()
-    {
-        return $this->field1;
-    }
-
-    public function getField2()
-    {
-        return $this->field2;
-    }
-}
-
-/**
- * @LogMessage(expression="'object_with_double_nested'")
- */
-class ObjectWithDoubleNested
-{
-    /** @LogFields(fields={"field1", "simpleObject.field1"}) */
-    protected $object;
-
-    protected $field1;
-
-    protected $field2;
-
-    public function __construct(ObjectWithNested $object = null, $field1, $field2)
-    {
-        $this->object = $object;
-        $this->field1 = $field1;
-        $this->field2 = $field2;
-    }
-
-    public function getObject()
-    {
-        return $this->object;
-    }
-
-    public function getField1()
-    {
-        return $this->field1;
-    }
-
-    public function getField2()
-    {
-        return $this->field2;
-    }
-}
-
-/**
- * @LogMessage(expression="'object_with_error'")
- */
-class ObjectWithError
-{
-    /** @LogFields(fields={"field1", "erroronpath.field1"}) */
-    protected $object;
-
-    protected $field1;
-
-    protected $field2;
-
-    public function __construct(ObjectWithNested $object = null, $field1, $field2)
-    {
-        $this->object = $object;
-        $this->field1 = $field1;
-        $this->field2 = $field2;
-    }
-
-    public function getObject()
-    {
-        return $this->object;
-    }
-
-    public function getField1()
-    {
-        return $this->field1;
-    }
-
-    public function getField2()
-    {
-        return $this->field2;
-    }
-}
+use Tests\Unit\Netosoft\DomainBundle\Domain\Utils\Fixtures\ObjectWithDoubleNested;
+use Tests\Unit\Netosoft\DomainBundle\Domain\Utils\Fixtures\ObjectWithError;
+use Tests\Unit\Netosoft\DomainBundle\Domain\Utils\Fixtures\ObjectWithNested;
+use Tests\Unit\Netosoft\DomainBundle\Domain\Utils\Fixtures\SimpleObject;
 
 class LoggerUtilsTest extends \PHPUnit_Framework_TestCase
 {
@@ -170,14 +45,14 @@ class LoggerUtilsTest extends \PHPUnit_Framework_TestCase
         ];
 
         yield [
-                new SimpleObject(null, 'field2'), [
+            new SimpleObject(null, 'field2'), [
                 'field1' => null,
                 'field2' => 'field2',
             ],
         ];
 
         yield [
-                new ObjectWithNested(new SimpleObject('simple field1', 'simple field2'), 'field1', 'field2'), [
+            new ObjectWithNested(new SimpleObject('simple field1', 'simple field2'), 'field1', 'field2'), [
                 'field1' => 'field1',
                 'field2' => 'field2',
                 'simpleObject' => [
@@ -188,13 +63,13 @@ class LoggerUtilsTest extends \PHPUnit_Framework_TestCase
         ];
 
         yield [
-                new ObjectWithDoubleNested(
-                    new ObjectWithNested(
-                        new SimpleObject('simple field1', 'simple field2'),
-                        'nested field1', 'nested field2'
-                    ),
-                    'field1', 'field2'
-                ), [
+            new ObjectWithDoubleNested(
+                new ObjectWithNested(
+                    new SimpleObject('simple field1', 'simple field2'),
+                    'nested field1', 'nested field2'
+                ),
+                'field1', 'field2'
+            ), [
                 '__command_message__' => 'object_with_double_nested',
                 'field1' => 'field1',
                 'field2' => 'field2',
