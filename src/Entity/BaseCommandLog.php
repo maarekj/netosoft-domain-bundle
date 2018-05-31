@@ -196,7 +196,7 @@ abstract class BaseCommandLog implements CommandLogInterface
     /** {@inheritdoc} */
     public function setMessage($message)
     {
-        $this->message = substr($message, 0, 1000);
+        $this->message = \substr($message, 0, 1000);
 
         return $this;
     }
@@ -261,7 +261,7 @@ abstract class BaseCommandLog implements CommandLogInterface
     /** {@inheritdoc} */
     public function setRequest(Request $request = null)
     {
-        if ($request === null) {
+        if (null === $request) {
             $this->request = null;
             $this->pathInfo = null;
             $this->uri = null;
@@ -293,7 +293,7 @@ abstract class BaseCommandLog implements CommandLogInterface
             $this->pathInfo = $request->getPathInfo();
             $this->uri = $request->getUri();
             $this->clientIp = $request->getClientIp();
-            if ($request->getSession() !== null) {
+            if (null !== $request->getSession()) {
                 $this->sessionId = $request->getSession()->getId();
             }
         }
@@ -304,7 +304,7 @@ abstract class BaseCommandLog implements CommandLogInterface
     /** {@inheritdoc} */
     public function setException(\Throwable $exception = null)
     {
-        if ($exception === null) {
+        if (null === $exception) {
             $this->exceptionMessage = null;
             $this->exceptionFullMessage = null;
             $this->exceptionClass = null;
@@ -312,7 +312,7 @@ abstract class BaseCommandLog implements CommandLogInterface
         } else {
             $this->exceptionMessage = $exception->getMessage();
             $this->exceptionFullMessage = self::exceptionFullMessage($exception);
-            $this->exceptionClass = get_class($exception);
+            $this->exceptionClass = \get_class($exception);
             $this->exceptionData = self::exceptionToArray($exception);
         }
 
@@ -323,7 +323,7 @@ abstract class BaseCommandLog implements CommandLogInterface
     {
         $message = $exception->getMessage();
 
-        if ($exception->getPrevious() !== null) {
+        if (null !== $exception->getPrevious()) {
             $message .= ' '.self::exceptionFullMessage($exception->getPrevious());
         }
 
@@ -333,7 +333,7 @@ abstract class BaseCommandLog implements CommandLogInterface
     protected static function exceptionToArray(\Throwable $exception): array
     {
         $array = [
-            'exception_class' => get_class($exception),
+            'exception_class' => \get_class($exception),
             'code' => $exception->getCode(),
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
@@ -341,7 +341,7 @@ abstract class BaseCommandLog implements CommandLogInterface
             'traceAsString' => $exception->getTraceAsString(),
         ];
 
-        if ($exception->getPrevious() !== null) {
+        if (null !== $exception->getPrevious()) {
             $array['previous'] = self::exceptionToArray($exception->getPrevious());
         }
 

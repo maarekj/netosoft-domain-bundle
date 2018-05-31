@@ -13,11 +13,11 @@ class ExpressionLanguageProvider implements ExpressionFunctionProviderInterface
         return [
             new ExpressionFunction('json_encode', function ($arg) {
             }, function (array $variables, $value) {
-                return json_encode($value);
+                return \json_encode($value);
             }),
             new ExpressionFunction('wrap_paren', function ($arg) {
             }, function (array $variables, $value) {
-                return $value === null ? '' : '('.$value.')';
+                return null === $value ? '' : '('.$value.')';
             }),
         ];
     }

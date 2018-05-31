@@ -43,17 +43,17 @@ class LoggerUtils
             /** @var LogCollectionFields|null $logCollectionFieldsAnnot */
             $logCollectionFieldsAnnot = $this->annotationReader->getPropertyAnnotation($property, LogCollectionFields::class);
 
-            if ($logFieldsAnnot !== null) {
+            if (null !== $logFieldsAnnot) {
                 $object = $this->getValue($command, $property);
-                if ($object === null) {
+                if (null === $object) {
                     $array[$property->getName()] = null;
                 } else {
                     $array[$property->getName()] = $this->logFields($object, $logFieldsAnnot->fields);
                 }
-            } elseif ($logCollectionFieldsAnnot !== null) {
+            } elseif (null !== $logCollectionFieldsAnnot) {
                 $collection = $this->getValue($command, $property);
                 $row = [];
-                if ($collection !== null) {
+                if (null !== $collection) {
                     foreach ($collection as $object) {
                         $row[] = $this->logFields($object, $logCollectionFieldsAnnot->fields);
                     }
@@ -66,7 +66,7 @@ class LoggerUtils
 
         /** @var LogMessage $logMessageAnnot */
         $logMessageAnnot = $this->annotationReader->getClassAnnotation($class, LogMessage::class);
-        if ($logMessageAnnot !== null) {
+        if (null !== $logMessageAnnot) {
             try {
                 $array['__command_message__'] = $this->expressionLanguage->evaluate($logMessageAnnot->expression, [
                     'o' => $command,
@@ -79,7 +79,7 @@ class LoggerUtils
     }
 
     /**
-     * @param  mixed     $object
+     * @param mixed    $object
      * @param string[] $fields
      *
      * @return array
@@ -96,14 +96,14 @@ class LoggerUtils
     }
 
     /**
-     * @param mixed               $object
+     * @param mixed                      $object
      * @param string|\ReflectionProperty $property
      *
      * @return mixed
      */
     protected function getValue($object, $property)
     {
-        $property = is_string($property) ? $property : $property->getName();
+        $property = \is_string($property) ? $property : $property->getName();
 
         try {
             return $this->propertyAccessor->getValue($object, $property);

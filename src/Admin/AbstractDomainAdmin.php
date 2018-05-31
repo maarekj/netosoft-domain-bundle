@@ -74,7 +74,7 @@ abstract class AbstractDomainAdmin extends AbstractAdmin
      */
     public function getFormFactory(): FormFactoryInterface
     {
-        if ($this->formFactory === null) {
+        if (null === $this->formFactory) {
             throw new \RuntimeException('formFactory must be setted by setter injection.');
         }
 

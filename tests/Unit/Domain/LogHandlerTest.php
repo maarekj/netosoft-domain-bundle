@@ -64,7 +64,7 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->commandLogger
             ->expects($this->once())
-            ->method("mustLog")
+            ->method('mustLog')
             ->with($command)
             ->willReturn(true);
 
@@ -99,7 +99,7 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->commandLogger
             ->expects($this->once())
-            ->method("mustLog")
+            ->method('mustLog')
             ->with($command)
             ->willReturn(false);
 
@@ -122,7 +122,7 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->commandLogger
             ->expects($this->once())
-            ->method("mustLog")
+            ->method('mustLog')
             ->with($command)
             ->willReturn(false);
 
@@ -150,7 +150,7 @@ class LogHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->commandLogger
             ->expects($this->once())
-            ->method("mustLog")
+            ->method('mustLog')
             ->with($command)
             ->willReturn(true);
 

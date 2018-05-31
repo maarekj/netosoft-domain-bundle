@@ -20,7 +20,7 @@ class DomainCRUDController extends CRUDController
     {
         $action = $this->get(DeleteAction::class);
 
-        return $action->handle(array_merge([
+        return $action->handle(\array_merge([
             'request' => $this->getRequest(),
             'admin' => $this->getAdmin(),
         ], $this->getAdmin()->getDomainConfig('delete')));
@@ -30,7 +30,7 @@ class DomainCRUDController extends CRUDController
     {
         $action = $this->get(AdminCommandFormAction::class);
 
-        return $action->handle(array_merge([
+        return $action->handle(\array_merge([
             'request' => $this->getRequest(),
             'admin' => $this->getAdmin(),
             'action' => 'create',
@@ -48,7 +48,7 @@ class DomainCRUDController extends CRUDController
     {
         $action = $this->get(AdminCommandFormAction::class);
 
-        return $action->handle(array_merge([
+        return $action->handle(\array_merge([
             'request' => $this->getRequest(),
             'admin' => $this->getAdmin(),
             'action' => 'edit',
@@ -67,7 +67,7 @@ class DomainCRUDController extends CRUDController
     {
         $action = $this->get(AdminCommandFormAction::class);
 
-        return $action->handle(array_merge([
+        return $action->handle(\array_merge([
             'request' => $this->getRequest(),
             'admin' => $this->getAdmin(),
             'action' => 'edit',
@@ -87,7 +87,7 @@ class DomainCRUDController extends CRUDController
         $action = $this->get(EditFieldFormAction::class);
         $field = $request->get('field');
 
-        return $action->handle(array_merge([
+        return $action->handle(\array_merge([
             'request' => $request,
             'admin' => $this->getAdmin(),
         ], $this->getAdmin()->getFieldForm($field)));

@@ -28,7 +28,7 @@ class RenderFieldListAction
     {
         $object = $admin->getObject($id);
         if (!$object) {
-            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
+            throw new NotFoundHttpException(\sprintf('unable to find the object with id : %s', $id));
         }
 
         $fieldDescription = $admin->getListFieldDescription($field);

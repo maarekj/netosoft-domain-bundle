@@ -29,7 +29,7 @@ class HandlerHelper
 
     public function handleCreateOrEdit(CommandInterface $command, $securityAttributes, $validationGroups, $getCallable)
     {
-        if ($securityAttributes !== null) {
+        if (null !== $securityAttributes) {
             $this->securityUtils->isGrantedOrThrow($securityAttributes, ['command' => $command]);
         }
         $this->validatorUtils->validateOrThrow($command);
@@ -51,14 +51,14 @@ class HandlerHelper
     public function handleDelete(CommandInterface $command, $securityAttributes, callable $getCallable, callable $preRemove = null, callable $postRemove = null)
     {
         $entity = $getCallable($command);
-        if ($securityAttributes !== null) {
+        if (null !== $securityAttributes) {
             $this->securityUtils->isGrantedOrThrow($securityAttributes, ['command' => $command, 'entity' => $entity]);
         }
         $this->validatorUtils->validateOrThrow($command);
 
         $manager = $this->getManager();
 
-        if ($preRemove !== null) {
+        if (null !== $preRemove) {
             $preRemove($command, $entity);
         }
         $manager->remove($entity);
@@ -66,7 +66,7 @@ class HandlerHelper
 
         $command->setReturnValue($entity);
 
-        if ($postRemove != null) {
+        if (null != $postRemove) {
             $postRemove($command, $entity);
         }
     }

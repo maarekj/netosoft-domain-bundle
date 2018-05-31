@@ -26,7 +26,7 @@ class RenderRowAction
     {
         $object = $admin->getObject($id);
         if (!$object) {
-            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
+            throw new NotFoundHttpException(\sprintf('unable to find the object with id : %s', $id));
         }
 
         $template = $admin->getTemplate('inner_list_row');

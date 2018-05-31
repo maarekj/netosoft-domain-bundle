@@ -9,11 +9,11 @@ namespace Netosoft\DomainBundle\Utils;
  */
 function immutableDate(\DateTimeInterface $date = null)
 {
-    if ($date === null) {
+    if (null === $date) {
         return null;
     } else {
         $return = \DateTimeImmutable::createFromFormat(\DateTime::RFC2822, $date->format(\DateTime::RFC2822));
 
-        return $return === false ? null : $return;
+        return false === $return ? null : $return;
     }
 }

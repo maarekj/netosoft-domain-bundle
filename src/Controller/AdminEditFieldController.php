@@ -26,7 +26,7 @@ class AdminEditFieldController extends Controller
         $admin = $this->getPool()->getInstance($code);
         $admin->setRequest($request);
 
-        if ($request->getMethod() != 'POST') {
+        if ('POST' != $request->getMethod()) {
             return new JsonResponse('Expected a POST Request', 405);
         }
 

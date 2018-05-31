@@ -82,7 +82,7 @@ class DeleteAction
 
         $admin->checkAccess('delete', $object);
 
-        if ($this->helper->getRestMethod($request) === 'DELETE') {
+        if ('DELETE' === $this->helper->getRestMethod($request)) {
             // check the csrf token
             $this->helper->validateCsrfToken($request, 'sonata.delete');
             $objectName = $options['to_string']($object);
@@ -102,7 +102,7 @@ class DeleteAction
 
                 return $options['success_response']($options, $args);
             } catch (\Exception $exception) {
-                $this->helper->addFlash('sonata_flash_error', nl2br($exception->getMessage()));
+                $this->helper->addFlash('sonata_flash_error', \nl2br($exception->getMessage()));
                 $this->logger->error($exception->getMessage(), ['exception' => $exception]);
             }
         }

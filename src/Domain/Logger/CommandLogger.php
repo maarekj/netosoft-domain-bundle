@@ -33,7 +33,7 @@ class CommandLogger implements CommandLoggerInterface
 
         $annotation = $this->annotationReader->getClassAnnotation($refClass, NotLog::class);
 
-        return $annotation === null;
+        return null === $annotation;
     }
 
     /** {@inheritdoc} */
@@ -43,7 +43,7 @@ class CommandLogger implements CommandLoggerInterface
 
         /** @var CommandLoggerAnnotation|null $annotation */
         $annotation = $this->annotationReader->getClassAnnotation($refClass, CommandLoggerAnnotation::class);
-        if ($annotation == null || $annotation->service === null) {
+        if (null == $annotation || null === $annotation->service) {
             $logger = $this->loggerFallback;
         } else {
             $logger = $this->container->get($annotation->service);

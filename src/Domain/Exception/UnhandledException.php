@@ -12,7 +12,7 @@ class UnhandledException extends DomainException
 
     public function __construct(CommandInterface $command, $code = 0, Exception $previous = null)
     {
-        $message = sprintf('This command %s is unhandled.', get_class($command));
+        $message = \sprintf('This command %s is unhandled.', \get_class($command));
         $this->command = $command;
         parent::__construct($message, $code, $previous);
     }

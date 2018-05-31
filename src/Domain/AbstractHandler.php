@@ -32,6 +32,7 @@ abstract class AbstractHandler implements HandlerInterface
                 return true;
             }
         }
+
         return false;
     }
 

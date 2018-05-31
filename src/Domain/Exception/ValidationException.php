@@ -12,9 +12,9 @@ class ValidationException extends DomainException
 
     public function __construct(ConstraintViolationListInterface $violations)
     {
-        $message = implode("\n", array_map(function (ConstraintViolationInterface $violation) {
-            return sprintf('%s: %s', $violation->getPropertyPath(), $violation->getMessage());
-        }, iterator_to_array($violations)));
+        $message = \implode("\n", \array_map(function (ConstraintViolationInterface $violation) {
+            return \sprintf('%s: %s', $violation->getPropertyPath(), $violation->getMessage());
+        }, \iterator_to_array($violations)));
         parent::__construct($message);
 
         $this->violations = $violations;

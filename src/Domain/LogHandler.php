@@ -79,7 +79,7 @@ class LogHandler implements HandlerInterface
 
         $message = $entity->getMessage();
 
-        if ($exception !== null) {
+        if (null !== $exception) {
             $this->logger->error($message, ['command' => $entity->getCommandData(), 'type' => $type, 'exception' => $exception]);
         } else {
             $this->logger->info($message, ['command' => $entity->getCommandData(), 'type' => $type]);

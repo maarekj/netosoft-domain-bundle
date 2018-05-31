@@ -24,7 +24,7 @@ class ResolverHelper
             ->setDefault($key, [])
             ->setAllowedTypes($key, ['array', 'callable'])
             ->setNormalizer($key, function (Options $options, $value) {
-                return is_array($value) ? $this->createIdentity($value) : $value;
+                return \is_array($value) ? $this->createIdentity($value) : $value;
             });
     }
 
@@ -34,7 +34,7 @@ class ResolverHelper
             ->setRequired($key)
             ->setAllowedTypes($key, ['string', 'callable'])
             ->setNormalizer($key, function (Options $options, $value) {
-                return is_string($value) ? $this->createIdentity($value) : $value;
+                return \is_string($value) ? $this->createIdentity($value) : $value;
             });
     }
 
@@ -55,13 +55,13 @@ class ResolverHelper
      */
     public function createCommand($value)
     {
-        if (is_string($value) && class_exists($value)) {
+        if (\is_string($value) && \class_exists($value)) {
             return function () use ($value) {
                 return new $value();
             };
         }
 
-        if (is_array($value) && $value['strategy'] === 'from_object') {
+        if (\is_array($value) && 'from_object' === $value['strategy']) {
             return function ($options, $args) use ($value) {
                 $object = $args['object'];
 
@@ -69,18 +69,18 @@ class ResolverHelper
             };
         }
 
-        if (is_array($value) && $value['strategy'] === 'from_parent_admin') {
+        if (\is_array($value) && 'from_parent_admin' === $value['strategy']) {
             return function ($options, $args) use ($value) {
                 /** @var AdminInterface $admin */
                 $admin = $options['admin'];
                 $parentAdmin = $admin->getParent();
-                $parentEntity = $parentAdmin !== null ? $parentAdmin->getSubject() : null;
+                $parentEntity = null !== $parentAdmin ? $parentAdmin->getSubject() : null;
 
                 return new $value['class']($parentEntity);
             };
         }
 
-        if (is_callable($value)) {
+        if (\is_callable($value)) {
             return $value;
         }
 
@@ -104,14 +104,14 @@ class ResolverHelper
      */
     public function createSuccessResponse($value)
     {
-        if ($value === 'redirect_list') {
+        if ('redirect_list' === $value) {
             return function ($options, $args) {
                 /** @var AdminInterface $admin */
                 $admin = $options['admin'];
 
                 return new RedirectResponse($admin->generateUrl('list'));
             };
-        } elseif ($value === 'redirect_edit') {
+        } elseif ('redirect_edit' === $value) {
             return function ($options, $args) {
                 /** @var AdminInterface $admin */
                 $admin = $options['admin'];
@@ -121,7 +121,7 @@ class ResolverHelper
             };
         }
 
-        if (is_callable($value)) {
+        if (\is_callable($value)) {
             return $value;
         }
 
@@ -132,7 +132,7 @@ class ResolverHelper
     {
         $resolver
             ->setDefault($key, $default)
-            ->setAllowedTypes($key, array_filter([$default === null ? 'null' : null, 'string', 'callable']))
+            ->setAllowedTypes($key, \array_filter([null === $default ? 'null' : null, 'string', 'callable']))
             ->setNormalizer($key, function (Options $options, $value) {
                 return $this->createGetObject($value);
             });
@@ -145,17 +145,17 @@ class ResolverHelper
      */
     public function createGetObject($value)
     {
-        if ($value === null) {
+        if (null === $value) {
             return null;
         }
 
-        if ($value === 'from_request') {
+        if ('from_request' === $value) {
             return function ($options) {
                 return $this->helper->getAdminObjectOrNotFound($options['request'], $options['admin']);
             };
         }
 
-        if (is_callable($value)) {
+        if (\is_callable($value)) {
             return $value;
         }
 

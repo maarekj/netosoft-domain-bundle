@@ -46,7 +46,7 @@ class SecurityUtils
     public function getAppUserOrThrow()
     {
         $user = $this->getAppUser();
-        if ($user === null) {
+        if (null === $user) {
             throw new NotLoggedException();
         }
 
@@ -59,7 +59,7 @@ class SecurityUtils
     public function getAppUser()
     {
         $token = $this->tokenStorage->getToken();
-        $user = $token === null ? null : $token->getUser();
+        $user = null === $token ? null : $token->getUser();
 
         if ($user instanceof AdvancedUserInterface) {
             return $user;

@@ -36,7 +36,7 @@ interface CommandLogInterface
      *
      * @return $this
      */
-    public function setPreviousCommandLog(CommandLogInterface $previousCommandLog = null);
+    public function setPreviousCommandLog(self $previousCommandLog = null);
 
     /**
      * @return null|string

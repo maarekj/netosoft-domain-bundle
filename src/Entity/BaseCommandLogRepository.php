@@ -38,16 +38,16 @@ abstract class BaseCommandLogRepository extends EntityRepository implements Comm
 
         $entity->setCommandData($this->getCommandLogger()->log($command));
 
-        $entity->setCommandClass(get_class($command));
+        $entity->setCommandClass(\get_class($command));
         $entity->setRequest($this->getRequestStack()->getMasterRequest());
         $entity->setCurrentUsername($this->getCurrentUsername());
 
-        if ($exception !== null) {
+        if (null !== $exception) {
             $entity->setException($exception);
         }
 
-        if ($this->uniqueId === null) {
-            $this->uniqueId = uniqid('request');
+        if (null === $this->uniqueId) {
+            $this->uniqueId = \uniqid('request');
         }
 
         $entity->setRequestId($this->uniqueId);
@@ -61,7 +61,7 @@ abstract class BaseCommandLogRepository extends EntityRepository implements Comm
         $qb->select('command_log.commandClass')->distinct();
         $results = $qb->getQuery()->getScalarResult();
 
-        return array_values(array_map(function ($row) {
+        return \array_values(\array_map(function ($row) {
             return $row['commandClass'];
         }, $results));
     }
@@ -77,9 +77,9 @@ abstract class BaseCommandLogRepository extends EntityRepository implements Comm
     protected function getCurrentUsername()
     {
         $token = $this->getTokenStorage()->getToken();
-        if ($token !== null) {
+        if (null !== $token) {
             $user = $token->getUser();
-            if ($user !== null) {
+            if (null !== $user) {
                 if ($user instanceof UserInterface) {
                     return $user->getUsername();
                 } else {

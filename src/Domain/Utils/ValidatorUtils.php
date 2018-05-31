@@ -18,7 +18,7 @@ class ValidatorUtils
     {
         $violations = $this->validator->validate($command, $constraints, $group);
 
-        if (count($violations) > 0) {
+        if (\count($violations) > 0) {
             throw new ValidationException($violations);
         }
     }

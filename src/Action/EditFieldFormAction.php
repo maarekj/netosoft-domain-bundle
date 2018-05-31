@@ -86,7 +86,7 @@ class EditFieldFormAction
         /** @var AbstractEditField $command */
         $command = new $options['command_class']($object, null);
         if (!$command instanceof AbstractEditField) {
-            throw new \RuntimeException('$command must be instance of %s but instance of %s given.', AbstractEditField::class, get_class($command));
+            throw new \RuntimeException('$command must be instance of %s but instance of %s given.', AbstractEditField::class, \get_class($command));
         }
         $command->setValue($command->getOldValue());
 
