@@ -27,6 +27,7 @@ abstract class AbstractDomainAdmin extends AbstractAdmin
 
     protected function configureRoutes(RouteCollection $collection)
     {
+        $collection->add('domainCreate', 'domain/{action}', [], ['action' => '[-_a-zA-Z0-9]+']);
         $collection->add('domain', 'domain/'.$this->getRouterIdParameter().'/{action}', [], ['action' => '[-_a-zA-Z0-9]+']);
         $collection->add('fieldForm', 'field-form/'.$this->getRouterIdParameter().'/{field}', [], ['field' => '[-_a-zA-Z0-9]+']);
         $collection->add('renderFieldList', 'render-field-list/'.$this->getRouterIdParameter().'/{field}', [], ['field' => '[-_a-zA-Z0-9]+']);
