@@ -6,7 +6,7 @@ use Netosoft\DomainBundle\Domain\Exception\NotLoggedException;
 use Netosoft\DomainBundle\Domain\Exception\UngrantedException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class SecurityUtils
 {
@@ -39,7 +39,7 @@ class SecurityUtils
     }
 
     /**
-     * @return AdvancedUserInterface
+     * @return UserInterface
      *
      * @throws NotLoggedException
      */
@@ -54,7 +54,7 @@ class SecurityUtils
     }
 
     /**
-     * @return AdvancedUserInterface|null
+     * @return UserInterface|null
      */
     public function getAppUser()
     {
