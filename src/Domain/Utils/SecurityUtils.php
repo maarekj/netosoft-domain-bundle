@@ -61,7 +61,7 @@ class SecurityUtils
         $token = $this->tokenStorage->getToken();
         $user = null === $token ? null : $token->getUser();
 
-        if ($user instanceof AdvancedUserInterface) {
+        if ($user instanceof UserInterface) {
             return $user;
         }
 
