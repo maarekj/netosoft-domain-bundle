@@ -2,19 +2,28 @@
 
 namespace Netosoft\DomainBundle\Entity;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Netosoft\DomainBundle\Domain\CommandInterface;
 use Netosoft\DomainBundle\Domain\CommandLoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * BaseCommandLogRepository.
- */
-abstract class BaseCommandLogRepository extends EntityRepository implements CommandLogRepositoryInterface
+class BaseCommandLogRepository extends ServiceEntityRepository implements CommandLogRepositoryInterface
 {
     protected $uniqueId = null;
+    protected $commandLogger;
+    protected $requestStack;
+    protected $tokenStorage;
+
+    public function __construct(ManagerRegistry $registry, string $entityClass, CommandLoggerInterface $commandLogger, RequestStack $requestStack, TokenStorageInterface $tokenStorage)
+    {
+        parent::__construct($registry, $entityClass);
+        $this->commandLogger = $commandLogger;
+        $this->requestStack = $requestStack;
+        $this->tokenStorage = $tokenStorage;
+    }
 
     /**
      * @return CommandLogInterface
@@ -36,10 +45,10 @@ abstract class BaseCommandLogRepository extends EntityRepository implements Comm
         $entity->setPreviousCommandLog($previousCommandLog);
         $entity->setType($type);
 
-        $entity->setCommandData($this->getCommandLogger()->log($command));
+        $entity->setCommandData($this->commandLogger->log($command));
 
         $entity->setCommandClass(\get_class($command));
-        $entity->setRequest($this->getRequestStack()->getMasterRequest());
+        $entity->setRequest($this->requestStack->getMasterRequest());
         $entity->setCurrentUsername($this->getCurrentUsername());
 
         if (null !== $exception) {
@@ -76,7 +85,7 @@ abstract class BaseCommandLogRepository extends EntityRepository implements Comm
      */
     protected function getCurrentUsername()
     {
-        $token = $this->getTokenStorage()->getToken();
+        $token = $this->tokenStorage->getToken();
         if (null !== $token) {
             $user = $token->getUser();
             if (null !== $user) {
@@ -90,10 +99,4 @@ abstract class BaseCommandLogRepository extends EntityRepository implements Comm
 
         return null;
     }
-
-    abstract public function getCommandLogger(): CommandLoggerInterface;
-
-    abstract public function getRequestStack(): RequestStack;
-
-    abstract public function getTokenStorage(): TokenStorageInterface;
 }

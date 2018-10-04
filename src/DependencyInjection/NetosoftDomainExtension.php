@@ -2,6 +2,7 @@
 
 namespace Netosoft\DomainBundle\DependencyInjection;
 
+use Netosoft\DomainBundle\Entity\CommandLogRepositoryInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -24,6 +25,8 @@ class NetosoftDomainExtension extends Extension
 
         $container->setParameter('netosoft_domain.entity.command_log.class', $config['entity']['command_log']);
         $container->setParameter('netosoft_domain.repository.command_log.class', $config['repository']['command_log']);
+        $container->setAlias(CommandLogRepositoryInterface::class, $config['repository']['command_log']);
+
         $container->setAlias('netosoft_domain.default_command_logger', $config['default_command_logger']);
         $container->setAlias('netosoft_domain.cache_logger_utils', $config['cache_logger_utils']);
 

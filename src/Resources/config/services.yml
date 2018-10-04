@@ -3,16 +3,6 @@ services:
         autowire: true
         public: true
 
-    netosoft_domain.repository.command_log:
-        class: "%netosoft_domain.repository.command_log.class%"
-        factory: ["@doctrine", "getRepository"]
-        arguments:
-            - "%netosoft_domain.entity.command_log.class%"
-            - "log_handler"
-
-    Netosoft\DomainBundle\Entity\CommandLogRepositoryInterface:
-        alias: netosoft_domain.repository.command_log
-
     netosoft_domain.chain_handler:
         class: Netosoft\DomainBundle\Domain\ChainHandler
 
