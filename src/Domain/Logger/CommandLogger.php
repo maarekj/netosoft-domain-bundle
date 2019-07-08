@@ -17,7 +17,7 @@ class CommandLogger implements CommandLoggerInterface
     /** @var Reader */
     private $annotationReader;
 
-    /** @var DefaultCommandLogger */
+    /** @var CommandLoggerInterface */
     private $loggerFallback;
 
     public function __construct(ContainerInterface $container, Reader $annotationReader, CommandLoggerInterface $loggerFallback)
@@ -47,6 +47,9 @@ class CommandLogger implements CommandLoggerInterface
             $logger = $this->loggerFallback;
         } else {
             $logger = $this->container->get($annotation->service);
+            if (!($logger instanceof CommandLoggerInterface)) {
+                throw new \InvalidArgumentException(\sprintf('"%s" must be implement %s', $annotation->service, CommandLoggerInterface::class));
+            }
         }
 
         return $logger->log($command);

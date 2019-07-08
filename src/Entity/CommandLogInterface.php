@@ -14,212 +14,73 @@ interface CommandLogInterface
 
     public static function getChoicesForType(): array;
 
-    /**
-     * @return int|null
-     */
-    public function getId();
+    public function getId(): ?int;
 
-    /**
-     * @param int|null $id
-     *
-     * @return $this
-     */
-    public function setId($id);
+    public function setId(?int $id): void;
 
-    /**
-     * @return CommandLogInterface|null
-     */
-    public function getPreviousCommandLog();
+    public function getPreviousCommandLog(): ?self;
 
-    /**
-     * @param CommandLogInterface|null $previousCommandLog
-     *
-     * @return $this
-     */
-    public function setPreviousCommandLog(self $previousCommandLog = null);
+    public function setPreviousCommandLog(?self $previousCommandLog = null): void;
 
-    /**
-     * @return null|string
-     */
-    public function getSessionId();
+    public function getSessionId(): ?string;
 
-    /**
-     * @return int|null
-     */
-    public function getType();
+    public function getType(): ?int;
 
-    /**
-     * @param int|null $type
-     *
-     * @return $this
-     */
-    public function setType($type);
+    public function setType(?int $type): void;
 
-    /**
-     * @return null|string
-     */
-    public function getMessage();
+    public function getMessage(): ?string;
 
-    /**
-     * @param null|string $message
-     *
-     * @return $this
-     */
-    public function setMessage($message);
+    public function setMessage(?string $message): void;
 
-    /**
-     * @return array|null
-     */
-    public function getCommandData();
+    public function getCommandData(): ?array;
 
-    /**
-     * @param array|null $commandData
-     *
-     * @return $this
-     */
-    public function setCommandData($commandData);
+    public function setCommandData(?array $commandData): void;
 
-    /**
-     * @return null|string
-     */
-    public function getCommandClass();
+    public function getCommandClass(): ?string;
 
-    /**
-     * @param null|string $commandClass
-     *
-     * @return $this
-     */
-    public function setCommandClass($commandClass);
+    public function setCommandClass(?string $commandClass): void;
 
-    /**
-     * @return null|string
-     */
-    public function getCurrentUsername();
+    public function getCurrentUsername(): ?string;
 
-    /**
-     * @param null|string $currentUsername
-     *
-     * @return $this
-     */
-    public function setCurrentUsername($currentUsername);
+    public function setCurrentUsername(?string $currentUsername): void;
 
-    /**
-     * @return \DateTimeImmutable
-     */
     public function getDate(): \DateTimeImmutable;
 
-    /**
-     * @return array|null
-     */
-    public function getRequest();
+    public function getRequest(): ?array;
 
-    /**
-     * @param Request|null $request
-     *
-     * @return $this
-     */
-    public function setRequest(Request $request = null);
+    public function setRequest(?Request $request = null): void;
 
-    /**
-     * @param \Throwable $exception
-     *
-     * @return $this
-     */
-    public function setException(\Throwable $exception = null);
+    public function setException(?\Throwable $exception = null): void;
 
-    /**
-     * @return null|string
-     */
-    public function getRequestId();
+    public function getRequestId(): ?string;
 
-    /**
-     * @param null|string $requestId
-     *
-     * @return $this
-     */
-    public function setRequestId($requestId);
+    public function setRequestId(?string $requestId): void;
 
-    /**
-     * @return null|string
-     */
-    public function getClientIp();
+    public function getClientIp(): ?string;
 
-    /**
-     * @param null|string $clientIp
-     *
-     * @return $this
-     */
-    public function setClientIp($clientIp);
+    public function setClientIp(?string $clientIp): void;
 
-    /**
-     * @return null|string
-     */
-    public function getPathInfo();
+    public function getPathInfo(): ?string;
 
-    /**
-     * @param null|string $pathInfo
-     *
-     * @return $this
-     */
-    public function setPathInfo($pathInfo);
+    public function setPathInfo(?string $pathInfo): void;
 
-    /**
-     * @return null|string
-     */
-    public function getUri();
+    public function getUri(): ?string;
 
-    /**
-     * @param null|string $uri
-     *
-     * @return $this
-     */
-    public function setUri($uri);
+    public function setUri(?string $uri): void;
 
-    /**
-     * @return null|string
-     */
-    public function getExceptionMessage();
+    public function getExceptionMessage(): ?string;
 
-    /**
-     * @param null|string $exceptionMessage
-     *
-     * @return $this
-     */
-    public function setExceptionMessage($exceptionMessage);
+    public function setExceptionMessage(?string $exceptionMessage): void;
 
-    /**
-     * @return null|string
-     */
-    public function getExceptionFullMessage();
+    public function getExceptionFullMessage(): ?string;
 
-    /**
-     * @param null|string $exceptionFullMessage
-     *
-     * @return $this
-     */
-    public function setExceptionFullMessage($exceptionFullMessage);
+    public function setExceptionFullMessage(?string $exceptionFullMessage): void;
 
-    /**
-     * @return null|string
-     */
-    public function getExceptionClass();
+    public function getExceptionClass(): ?string;
 
-    /**
-     * @param null|string $exceptionClass
-     *
-     * @return $this
-     */
-    public function setExceptionClass($exceptionClass);
+    public function setExceptionClass(?string $exceptionClass): void;
 
-    /**
-     * @return null|string
-     */
-    public function getExceptionData();
+    public function getExceptionData(): ?array;
 
-    /**
-     * @param null|string $exceptionData
-     *
-     * @return $this
-     */
-    public function setExceptionData($exceptionData);
+    public function setExceptionData(?array $exceptionData): void;
 }

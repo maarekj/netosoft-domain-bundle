@@ -9,17 +9,9 @@ use Netosoft\DomainBundle\Domain\CommandInterface;
  */
 interface CommandLogRepositoryInterface
 {
-    /**
-     * @param CommandInterface         $command
-     * @param int                      $type
-     * @param CommandLogInterface|null $previousCommandLog
-     * @param \Throwable|null          $exception
-     *
-     * @return CommandLogInterface
-     */
-    public function createEntity(CommandInterface $command, int $type, CommandLogInterface $previousCommandLog = null, \Throwable $exception = null);
+    public function createEntity(CommandInterface $command, int $type, ?CommandLogInterface $previousCommandLog = null, ?\Throwable $exception = null): CommandLogInterface;
 
-    public function getChoicesForCommandClass();
+    public function getChoicesForCommandClass(): array;
 
     public function getChoicesForType(): array;
 }

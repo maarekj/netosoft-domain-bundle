@@ -2,8 +2,8 @@
 
 namespace Netosoft\DomainBundle\Entity;
 
-use function Netosoft\DomainBundle\Utils\immutableDate;
 use Doctrine\ORM\Mapping as ORM;
+use function Netosoft\Utils\strictImmutableDate;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -13,6 +13,15 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class BaseCommandLog implements CommandLogInterface
 {
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
     /**
      * @var CommandLogInterface|null
      * @ORM\OneToOne(targetEntity="Netosoft\DomainBundle\Entity\CommandLogInterface")
@@ -104,7 +113,7 @@ abstract class BaseCommandLog implements CommandLogInterface
     protected $exceptionClass;
 
     /**
-     * @var string|null
+     * @var array|null
      * @ORM\Column(type="json_array", nullable=true)
      */
     protected $exceptionData;
@@ -153,113 +162,98 @@ abstract class BaseCommandLog implements CommandLogInterface
     // region Getters & Setters
     //------------------------------------------------------------------------
 
-    /** {@inheritdoc} */
-    public function getPreviousCommandLog()
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getPreviousCommandLog(): ?CommandLogInterface
     {
         return $this->previousCommandLog;
     }
 
-    /** {@inheritdoc} */
-    public function setPreviousCommandLog(CommandLogInterface $previousCommandLog = null)
+    public function setPreviousCommandLog(?CommandLogInterface $previousCommandLog = null): void
     {
         $this->previousCommandLog = $previousCommandLog;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getSessionId()
+    public function getSessionId(): ?string
     {
         return $this->sessionId;
     }
 
-    /** {@inheritdoc} */
-    public function getType()
+    public function getType(): ?int
     {
         return $this->type;
     }
 
-    /** {@inheritdoc} */
-    public function setType($type)
+    public function setType(?int $type): void
     {
         $this->type = $type;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getMessage()
+    public function getMessage(): ?string
     {
         return $this->message;
     }
 
-    /** {@inheritdoc} */
-    public function setMessage($message)
+    public function setMessage(?string $message): void
     {
-        $this->message = \substr($message, 0, 1000);
-
-        return $this;
+        $message = \substr(null !== $message ? $message : '', 0, 1000);
+        if (false !== $message) {
+            $this->message = $message;
+        }
     }
 
-    /** {@inheritdoc} */
-    public function getCommandData()
+    public function getCommandData(): ?array
     {
         return $this->commandData;
     }
 
-    /** {@inheritdoc} */
-    public function setCommandData($commandData)
+    public function setCommandData(?array $commandData): void
     {
         $this->commandData = $commandData;
 
         $message = isset($this->commandData['__command_message__']) ? $this->commandData['__command_message__'] : null;
         $this->setMessage($message);
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getCommandClass()
+    public function getCommandClass(): ?string
     {
         return $this->commandClass;
     }
 
-    /** {@inheritdoc} */
-    public function setCommandClass($commandClass)
+    public function setCommandClass(?string $commandClass): void
     {
         $this->commandClass = $commandClass;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getCurrentUsername()
+    public function getCurrentUsername(): ?string
     {
         return $this->currentUsername;
     }
 
-    /** {@inheritdoc} */
-    public function setCurrentUsername($currentUsername)
+    public function setCurrentUsername(?string $currentUsername): void
     {
         $this->currentUsername = $currentUsername;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
     public function getDate(): \DateTimeImmutable
     {
-        return immutableDate($this->date);
+        return strictImmutableDate($this->date);
     }
 
-    /** {@inheritdoc} */
-    public function getRequest()
+    public function getRequest(): ?array
     {
         return $this->request;
     }
 
-    /** {@inheritdoc} */
-    public function setRequest(Request $request = null)
+    public function setRequest(?Request $request = null): void
     {
         if (null === $request) {
             $this->request = null;
@@ -297,12 +291,9 @@ abstract class BaseCommandLog implements CommandLogInterface
                 $this->sessionId = $request->getSession()->getId();
             }
         }
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function setException(\Throwable $exception = null)
+    public function setException(\Throwable $exception = null): void
     {
         if (null === $exception) {
             $this->exceptionMessage = null;
@@ -315,8 +306,6 @@ abstract class BaseCommandLog implements CommandLogInterface
             $this->exceptionClass = \get_class($exception);
             $this->exceptionData = self::exceptionToArray($exception);
         }
-
-        return $this;
     }
 
     protected static function exceptionFullMessage(\Throwable $exception): string
@@ -348,116 +337,84 @@ abstract class BaseCommandLog implements CommandLogInterface
         return $array;
     }
 
-    /** {@inheritdoc} */
-    public function getRequestId()
+    public function getRequestId(): ?string
     {
         return $this->requestId;
     }
 
-    /** {@inheritdoc} */
-    public function setRequestId($requestId)
+    public function setRequestId(?string $requestId): void
     {
         $this->requestId = $requestId;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getClientIp()
+    public function getClientIp(): ?string
     {
         return $this->clientIp;
     }
 
-    /** {@inheritdoc} */
-    public function setClientIp($clientIp)
+    public function setClientIp(?string $clientIp): void
     {
         $this->clientIp = $clientIp;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getPathInfo()
+    public function getPathInfo(): ?string
     {
         return $this->pathInfo;
     }
 
-    /** {@inheritdoc} */
-    public function setPathInfo($pathInfo)
+    public function setPathInfo(?string $pathInfo): void
     {
         $this->pathInfo = $pathInfo;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getUri()
+    public function getUri(): ?string
     {
         return $this->uri;
     }
 
-    /** {@inheritdoc} */
-    public function setUri($uri)
+    public function setUri(?string $uri): void
     {
         $this->uri = $uri;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getExceptionMessage()
+    public function getExceptionMessage(): ?string
     {
         return $this->exceptionMessage;
     }
 
-    /** {@inheritdoc} */
-    public function setExceptionMessage($exceptionMessage)
+    public function setExceptionMessage(?string $exceptionMessage): void
     {
         $this->exceptionMessage = $exceptionMessage;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getExceptionFullMessage()
+    public function getExceptionFullMessage(): ?string
     {
         return $this->exceptionFullMessage;
     }
 
-    /** {@inheritdoc} */
-    public function setExceptionFullMessage($exceptionFullMessage)
+    public function setExceptionFullMessage(?string $exceptionFullMessage): void
     {
         $this->exceptionFullMessage = $exceptionFullMessage;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getExceptionClass()
+    public function getExceptionClass(): ?string
     {
         return $this->exceptionClass;
     }
 
-    /** {@inheritdoc} */
-    public function setExceptionClass($exceptionClass)
+    public function setExceptionClass(?string $exceptionClass): void
     {
         $this->exceptionClass = $exceptionClass;
-
-        return $this;
     }
 
-    /** {@inheritdoc} */
-    public function getExceptionData()
+    public function getExceptionData(): ?array
     {
         return $this->exceptionData;
     }
 
-    /** {@inheritdoc} */
-    public function setExceptionData($exceptionData)
+    public function setExceptionData(?array $exceptionData): void
     {
         $this->exceptionData = $exceptionData;
-
-        return $this;
     }
 
     // endregion

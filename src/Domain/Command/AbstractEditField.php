@@ -107,7 +107,7 @@ abstract class AbstractEditField implements CommandInterface
      */
     public function getValidationGroups(): array
     {
-        return (array) $this->validationGroups;
+        return $this->validationGroups;
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class AbstractEditField implements CommandInterface
      */
     public function getSecurityAttributes(): array
     {
-        return (array) $this->securityAttributes;
+        return $this->securityAttributes;
     }
 
     /**

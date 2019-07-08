@@ -45,7 +45,9 @@ class HandlerHelper
         $manager->persist($entity);
         $manager->flush();
 
-        $command->setReturnValue($entity);
+        if (\method_exists($command, 'setReturnValue')) {
+            $command->setReturnValue($entity);
+        }
     }
 
     public function handleDelete(CommandInterface $command, $securityAttributes, callable $getCallable, callable $preRemove = null, callable $postRemove = null)
@@ -64,7 +66,9 @@ class HandlerHelper
         $manager->remove($entity);
         $manager->flush();
 
-        $command->setReturnValue($entity);
+        if (\method_exists($command, 'setReturnValue')) {
+            $command->setReturnValue($entity);
+        }
 
         if (null != $postRemove) {
             $postRemove($command, $entity);

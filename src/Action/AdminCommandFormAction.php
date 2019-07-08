@@ -2,12 +2,9 @@
 
 namespace Netosoft\DomainBundle\Action;
 
-use Netosoft\DomainBundle\Action\ValueObject\CommandFormObject;
 use Netosoft\DomainBundle\Domain\CommandInterface;
 use Netosoft\DomainBundle\Domain\HandlerInterface;
-use Netosoft\DomainBundle\Form\Object\FormCommandObject;
 use Netosoft\DomainBundle\Form\Type\CreateSubmitType;
-use Netosoft\DomainBundle\Form\Type\FormCommandType;
 use Psr\Log\LoggerInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -135,15 +132,15 @@ class AdminCommandFormAction
 
         $admin->checkAccess($options['action'], $object);
 
-        $form = $this->helper->createForm(FormCommandType::class, new FormCommandObject($command), [
-            'method' => 'POST',
-            'action' => $request->getUri(),
-            'command_form' => $options['command_form']($command, $options, $args),
-            'command_form_options' => $options['command_form_options']($command, $options, $args),
-            'configure_actions_form' => function (FormBuilderInterface $builder) use ($options, $args) {
-                $options['configure_actions_form']($builder, $options, $args);
-            },
-        ]);
+        $formBuilder = $this->helper->createFormBuilder(['command' => $command])
+            ->add('command', $options['command_form']($command, $options, $args), $options['command_form_options']($command, $options, $args))
+            ->add('actions', FormType::class);
+
+        $options['configure_actions_form']($formBuilder->get('actions'), $options, $args);
+
+        $formBuilder->setMethod('POST');
+        $formBuilder->setAction($request->getUri());
+        $form = $formBuilder->getForm();
 
         $form->handleRequest($request);
 
@@ -176,7 +173,10 @@ class AdminCommandFormAction
         if ($isSubmitted && $isValid) {
             try {
                 $this->handler->handle($command);
-                $returned = $command->getReturnValue();
+                $returned = null;
+                if (\method_exists($command, 'getReturnValue')) {
+                    $returned = $command->getReturnValue();
+                }
                 $args['returned'] = $returned;
                 $success = true;
                 $status = 'success';
@@ -247,8 +247,12 @@ class AdminCommandFormAction
             $templateParams['modal_title'] = $this->getBoxTitle($options);
 
             if ($success && null !== $flashSuccess) {
+                $returned = null;
+                if (\method_exists($command, 'getReturnValue')) {
+                    $returned = $command->getReturnValue();
+                }
                 $templateParams['success_message'] = $this->helper->trans($flashSuccess, [
-                    '%name%' => $options['to_string']($command->getReturnValue()),
+                    '%name%' => $options['to_string']($returned),
                 ], $options['flash_translation_domain']);
             }
 

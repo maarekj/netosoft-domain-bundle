@@ -7,7 +7,7 @@ namespace Netosoft\DomainBundle\Domain;
  */
 abstract class AbstractHandler implements HandlerInterface
 {
-    /** @var string */
+    /** @var string[] */
     private $acceptedCommandClasses;
 
     /**

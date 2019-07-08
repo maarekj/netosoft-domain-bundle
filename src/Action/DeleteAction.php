@@ -94,7 +94,11 @@ class DeleteAction
 
                 $this->handler->handle($command);
 
-                $args['returned'] = $command->getReturnValue();
+                $returned = null;
+                if (\method_exists($command, 'getReturnValue')) {
+                    $returned = $command->getReturnValue();
+                }
+                $args['returned'] = $returned;
 
                 $this->helper->addTrFlash('sonata_flash_success', $options['flash_success'], [
                     '%name%' => $objectName,

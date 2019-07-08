@@ -86,7 +86,7 @@ class EditFieldFormAction
         /** @var AbstractEditField $command */
         $command = new $options['command_class']($object, null);
         if (!$command instanceof AbstractEditField) {
-            throw new \RuntimeException('$command must be instance of %s but instance of %s given.', AbstractEditField::class, \get_class($command));
+            throw new \RuntimeException(\sprintf('$command must be instance of %s but instance of %s given.', AbstractEditField::class, \get_class($command)));
         }
         $command->setValue($command->getOldValue());
 
@@ -112,7 +112,10 @@ class EditFieldFormAction
         if ($isSubmitted && $isValid) {
             try {
                 $this->handler->handle($command);
-                $returned = $command->getReturnValue();
+                $returned = null;
+                if (\method_exists($command, 'getReturnValue')) {
+                    $returned = $command->getReturnValue();
+                }
                 $args['returned'] = $returned;
                 $success = true;
                 $status = 'success';

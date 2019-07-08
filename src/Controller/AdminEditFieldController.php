@@ -32,7 +32,7 @@ class AdminEditFieldController extends Controller
 
         $rootObject = $object = $admin->getObject($objectId);
 
-        if (!$object) {
+        if (null === $object) {
             return new JsonResponse('Object does not exist', 404);
         }
 

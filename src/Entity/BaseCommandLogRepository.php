@@ -12,9 +12,16 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class BaseCommandLogRepository extends ServiceEntityRepository implements CommandLogRepositoryInterface
 {
-    protected $uniqueId = null;
+    /** @var string|null */
+    protected $uniqueId;
+
+    /** @var CommandLoggerInterface */
     protected $commandLogger;
+
+    /** @var RequestStack */
     protected $requestStack;
+
+    /** @var TokenStorageInterface */
     protected $tokenStorage;
 
     public function __construct(ManagerRegistry $registry, string $entityClass, CommandLoggerInterface $commandLogger, RequestStack $requestStack, TokenStorageInterface $tokenStorage)
@@ -23,22 +30,18 @@ class BaseCommandLogRepository extends ServiceEntityRepository implements Comman
         $this->commandLogger = $commandLogger;
         $this->requestStack = $requestStack;
         $this->tokenStorage = $tokenStorage;
+
+        $this->uniqueId = null;
     }
 
-    /**
-     * @return CommandLogInterface
-     */
-    public function newInstance()
+    public function newInstance(): CommandLogInterface
     {
         $class = $this->getClassName();
 
         return new $class();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function createEntity(CommandInterface $command, int $type, CommandLogInterface $previousCommandLog = null, \Throwable $exception = null)
+    public function createEntity(CommandInterface $command, int $type, ?CommandLogInterface $previousCommandLog = null, ?\Throwable $exception = null): CommandLogInterface
     {
         $entity = $this->newInstance();
 
@@ -64,7 +67,7 @@ class BaseCommandLogRepository extends ServiceEntityRepository implements Comman
         return $entity;
     }
 
-    public function getChoicesForCommandClass()
+    public function getChoicesForCommandClass(): array
     {
         $qb = $this->createQueryBuilder('command_log');
         $qb->select('command_log.commandClass')->distinct();
@@ -80,10 +83,7 @@ class BaseCommandLogRepository extends ServiceEntityRepository implements Comman
         return BaseCommandLog::getChoicesForType();
     }
 
-    /**
-     * @return null|string
-     */
-    protected function getCurrentUsername()
+    protected function getCurrentUsername(): ?string
     {
         $token = $this->tokenStorage->getToken();
         if (null !== $token) {

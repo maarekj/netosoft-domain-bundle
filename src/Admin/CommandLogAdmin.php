@@ -51,7 +51,7 @@ class CommandLogAdmin extends AbstractAdmin
             ->add('commandClass', 'doctrine_orm_callback', [
                 'field_type' => SelectCommandLogCommandClassType::class,
                 'callback' => function ($query, $alias, $field, $value) {
-                    if (!isset($value['value']) || empty($value['value'])) {
+                    if (!isset($value['value']) || '' === $value['value'] || null === $value['value']) {
                         return false;
                     }
 

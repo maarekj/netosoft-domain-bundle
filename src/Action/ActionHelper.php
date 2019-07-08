@@ -63,16 +63,16 @@ class ActionHelper
         $id = $request->get($admin->getIdParameter());
         $object = $admin->getObject($id);
 
-        if (!$object) {
+        if (null === $object) {
             throw new NotFoundHttpException(\sprintf('unable to find the object with id : %s', $id));
         }
 
         return $object;
     }
 
-    public function isXmlHttpRequest(Request $request)
+    public function isXmlHttpRequest(Request $request): bool
     {
-        return $request->isXmlHttpRequest() || $request->get('_xml_http_request');
+        return $request->isXmlHttpRequest() || (bool) $request->get('_xml_http_request');
     }
 
     /**
@@ -80,16 +80,25 @@ class ActionHelper
      *
      * @return string The template name
      */
-    protected function getBaseTemplate(Request $request, AdminInterface $admin)
+    protected function getBaseTemplate(Request $request, AdminInterface $admin): string
     {
+        $template = null;
         if ($this->isXmlHttpRequest($request)) {
-            return $admin->getTemplate('ajax');
+            $template = $admin->getTemplate('ajax');
+            if (null === $template) {
+                throw new \InvalidArgumentException("The template ajax doesn't exist");
+            }
+        } else {
+            $template = $admin->getTemplate('layout');
+            if (null === $template) {
+                throw new \InvalidArgumentException("The template layout doesn't exist");
+            }
         }
 
-        return $admin->getTemplate('layout');
+        return $template;
     }
 
-    public function adminRender(Request $request = null, AdminInterface $admin, $view, array $parameters = [], Response $response = null)
+    public function adminRender(Request $request, AdminInterface $admin, $view, array $parameters = [], Response $response = null): Response
     {
         if (!$this->isXmlHttpRequest($request)) {
             $parameters['breadcrumbs_builder'] = $this->breadcrumbsBuilder;
@@ -104,7 +113,7 @@ class ActionHelper
         return $this->render($view, $parameters, $response);
     }
 
-    public function render($view, array $parameters = [], Response $response = null)
+    public function render($view, array $parameters = [], Response $response = null): Response
     {
         if (null === $response) {
             $response = new Response();
@@ -115,13 +124,13 @@ class ActionHelper
         return $response;
     }
 
-    public function addTrFlash(string $flashKey, string $translationKey, array $parameters = [], $domain = null, $locale = null)
+    public function addTrFlash(string $flashKey, string $translationKey, array $parameters = [], $domain = null, $locale = null): void
     {
         $message = $this->translator->trans($translationKey, $parameters, $domain, $locale);
         $this->addFlash($flashKey, $message);
     }
 
-    public function addFlash(string $flashKey, string $message)
+    public function addFlash(string $flashKey, string $message): void
     {
         $this->session->getFlashBag()->add($flashKey, $message);
     }
@@ -135,7 +144,7 @@ class ActionHelper
      *
      * @return FormInterface
      */
-    public function createForm($type, $data = null, array $options = [])
+    public function createForm(string $type, $data = null, array $options = []): FormInterface
     {
         return $this->formFactory->create($type, $data, $options);
     }
@@ -148,7 +157,7 @@ class ActionHelper
      *
      * @return FormBuilderInterface
      */
-    public function createFormBuilder($data = null, array $options = [])
+    public function createFormBuilder($data = null, array $options = []): FormBuilderInterface
     {
         return $this->formFactory->createBuilder(FormType::class, $data, $options);
     }
@@ -188,7 +197,7 @@ class ActionHelper
      *
      * @return string
      */
-    public function escapeHtml($s)
+    public function escapeHtml($s): string
     {
         return \htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
@@ -213,9 +222,9 @@ class ActionHelper
      *
      * @param string $intention
      *
-     * @return string|false
+     * @return string
      */
-    public function getCsrfToken($intention)
+    public function getCsrfToken($intention): string
     {
         return $this->csrfTokenManager->getToken($intention)->getValue();
     }
@@ -228,7 +237,7 @@ class ActionHelper
      *
      * @throws HttpException
      */
-    public function validateCsrfToken(Request $request, $intention)
+    public function validateCsrfToken(Request $request, $intention): void
     {
         $token = $request->request->get('_sonata_csrf_token', false);
 

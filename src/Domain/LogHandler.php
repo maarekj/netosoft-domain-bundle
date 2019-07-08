@@ -78,6 +78,7 @@ class LogHandler implements HandlerInterface
         $entity = $this->commandLogRepo->createEntity($command, $type, $previousCommandLog, $exception);
 
         $message = $entity->getMessage();
+        $message = null === $message ? '' : $message;
 
         if (null !== $exception) {
             $this->logger->error($message, ['command' => $entity->getCommandData(), 'type' => $type, 'exception' => $exception]);

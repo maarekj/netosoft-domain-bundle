@@ -5,10 +5,9 @@ namespace Netosoft\DomainBundle\Action;
 use Netosoft\DomainBundle\Action\ValueObject\BaseCommandFormActionReturn;
 use Netosoft\DomainBundle\Domain\CommandInterface;
 use Netosoft\DomainBundle\Domain\HandlerInterface;
-use Netosoft\DomainBundle\Form\Object\FormCommandObject;
 use Netosoft\DomainBundle\Form\Type\CreateSubmitType;
-use Netosoft\DomainBundle\Form\Type\FormCommandType;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -64,15 +63,15 @@ class BaseCommandFormAction
         /** @var CommandInterface $command */
         $command = $options['command'];
 
-        $form = $this->helper->createForm(FormCommandType::class, new FormCommandObject($command), [
-            'method' => 'POST',
-            'action' => $options['form_action'],
-            'command_form' => $options['command_form']($command, $options),
-            'command_form_options' => $options['command_form_options']($command, $options),
-            'configure_actions_form' => function (FormBuilderInterface $builder) use ($options) {
-                $options['configure_actions_form']($builder, $options);
-            },
-        ]);
+        $formBuilder = $this->helper->createFormBuilder(['command' => $command])
+            ->add('command', $options['command_form']($command, $options), $options['command_form_options']($command, $options))
+            ->add('actions', FormType::class);
+
+        $options['configure_actions_form']($formBuilder->get('actions'), $options);
+
+        $formBuilder->setMethod('POST');
+        $formBuilder->setAction($options['form_action']);
+        $form = $formBuilder->getForm();
 
         $form->handleRequest($request);
 

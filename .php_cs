@@ -12,6 +12,7 @@ return PhpCsFixer\Config::create()
         '@Symfony' => true,
         'array_syntax' => array('syntax' => 'short'),
         'native_function_invocation' => true,
+        'phpdoc_no_empty_return' => false,
     ))
     ->setFinder($finder)
 ;

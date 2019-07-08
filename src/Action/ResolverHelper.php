@@ -145,10 +145,6 @@ class ResolverHelper
      */
     public function createGetObject($value)
     {
-        if (null === $value) {
-            return null;
-        }
-
         if ('from_request' === $value) {
             return function ($options) {
                 return $this->helper->getAdminObjectOrNotFound($options['request'], $options['admin']);
