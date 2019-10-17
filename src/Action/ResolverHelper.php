@@ -151,11 +151,17 @@ class ResolverHelper
             };
         }
 
+        if (null === $value) {
+            return function () {
+                return null;
+            };
+        }
+
         if (\is_callable($value)) {
             return $value;
         }
 
-        throw new InvalidArgumentException('value must be "from_request" or callable.');
+        throw new InvalidArgumentException('value must be "from_request", null, or callable.');
     }
 
     private function createIdentity($value): callable
