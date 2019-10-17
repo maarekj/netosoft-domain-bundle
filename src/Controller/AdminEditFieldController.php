@@ -3,12 +3,12 @@
 namespace Netosoft\DomainBundle\Controller;
 
 use Netosoft\DomainBundle\Domain\HandlerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sonata\AdminBundle\Admin\Pool;
 use Sonata\AdminBundle\Twig\Extension\SonataAdminExtension;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class AdminEditFieldController extends Controller
 {
