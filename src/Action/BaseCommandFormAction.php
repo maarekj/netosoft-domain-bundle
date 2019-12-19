@@ -53,8 +53,6 @@ class BaseCommandFormAction
      */
     public function handle(array $options)
     {
-        $return = new BaseCommandFormActionReturn();
-
         $options = $this->resolver->resolve($options);
 
         /** @var Request $request */
@@ -75,11 +73,9 @@ class BaseCommandFormAction
 
         $form->handleRequest($request);
 
-        $return->success = false;
-        $return->exception = null;
+        $return = new BaseCommandFormActionReturn($command, $form, false);
         $isSubmitted = $form->isSubmitted();
         $isValid = $form->isValid();
-        $return->status = !$isSubmitted ? 'default' : (!$isValid ? 'error-form' : 'valid');
         if ($isSubmitted && $isValid) {
             try {
                 $this->handler->handle($command);
@@ -92,10 +88,6 @@ class BaseCommandFormAction
                 $return->status = 'error-exception';
             }
         }
-
-        $return->command = $command;
-        $return->form = $form;
-        $return->errorForm = $isSubmitted && !$isValid ? $form->getErrors(true, true) : null;
 
         return $return;
     }

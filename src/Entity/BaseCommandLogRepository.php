@@ -10,6 +10,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * @template T as CommandLogInterface
+ * @extends ServiceEntityRepository<T>
+ */
 class BaseCommandLogRepository extends ServiceEntityRepository implements CommandLogRepositoryInterface
 {
     /** @var string|null */
