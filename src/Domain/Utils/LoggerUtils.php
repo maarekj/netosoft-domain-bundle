@@ -33,10 +33,9 @@ class LoggerUtils
     public function logCommand($command): array
     {
         $class = new \ReflectionClass($command);
-
         $array = [];
 
-        foreach ($class->getProperties() as $property) {
+        foreach ($this->getAllProperties($class) as $property) {
             /** @var LogFields|null $logFieldsAnnot */
             $logFieldsAnnot = $this->annotationReader->getPropertyAnnotation($property, LogFields::class);
 
@@ -60,7 +59,7 @@ class LoggerUtils
                 }
                 $array[$property->getName()] = $row;
             } else {
-                $array[$property->getName()] = $this->getValue($command, $property);
+                $array[$property->getName()] = $this->logValue($command, $property);
             }
         }
 
@@ -79,6 +78,20 @@ class LoggerUtils
     }
 
     /**
+     * @param \ReflectionClass $class
+     * @return \ReflectionProperty[]
+     */
+    protected function getAllProperties(\ReflectionClass $class): array
+    {
+        $properties = $class->getProperties();
+        while ($class = $class->getParentClass()) {
+            $properties = \array_merge([], $properties, $class->getProperties());
+        }
+
+        return \array_reverse($properties);
+    }
+
+    /**
      * @param mixed    $object
      * @param string[] $fields
      *
@@ -89,10 +102,28 @@ class LoggerUtils
         $array = [];
 
         foreach ($fields as $field) {
-            $array[$field] = $this->getValue($object, $field);
+            $array[$field] = $this->logValue($object, $field);
         }
 
         return $array;
+    }
+
+    /**
+     * @param mixed                      $object
+     * @param string|\ReflectionProperty $property
+     *
+     * @return mixed
+     */
+    protected function logValue($object, $property)
+    {
+        $value = $this->getValue($object, $property);
+        $json = \json_encode($value);
+
+        if ($json === false) {
+            return null;
+        }
+
+        return $value;
     }
 
     /**

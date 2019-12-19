@@ -326,7 +326,6 @@ abstract class BaseCommandLog implements CommandLogInterface
             'code' => $exception->getCode(),
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
-            'trace' => $exception->getTrace(),
             'traceAsString' => $exception->getTraceAsString(),
         ];
 
