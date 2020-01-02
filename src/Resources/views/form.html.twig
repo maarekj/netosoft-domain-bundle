@@ -1,0 +1,34 @@
+{% block root %}
+    {{ form_start(form) }}
+    {{ include('@SonataAdmin/Helper/render_form_dismissable_errors.html.twig') }}
+
+    {% block box_form %}
+        <div class="box box-default">
+            <div class="box-header">
+                {% block box_form_header %}
+                    <h4 class="box-title">
+                        {% block box_form_title %}{{ box_title|default('') }}{% endblock %}
+                    </h4>
+                {% endblock %}
+            </div>
+            <div class="box-body">
+                <div class="sonata-ba-collapsed-fields">
+                    {% block box_form_body %}
+                        {{ form_widget(form.command) }}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block form_actions %}
+        <div class="sonata-ba-form-actions well well-small form-actions">
+            {% block sonata_form_actions %}
+                {{ form_widget(form.actions) }}
+            {% endblock %}
+        </div>
+    {% endblock form_actions %}
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+{% endblock %}

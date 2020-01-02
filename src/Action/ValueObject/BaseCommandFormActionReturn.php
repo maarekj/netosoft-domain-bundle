@@ -37,12 +37,12 @@ final class BaseCommandFormActionReturn
     public function __construct(CommandInterface $command, FormInterface $form, bool $success)
     {
         $isSubmitted = $form->isSubmitted();
-        $isValid = $form->isValid();
+        $isValid = $isSubmitted ? $form->isValid() : true;
 
         $this->command = $command;
         $this->form = $form;
         $this->success = $success;
-        $this->exception = $exception;
+        $this->exception = null;
         $this->status = !$isSubmitted ? 'default' : (!$isValid ? 'error-form' : 'valid');
         $this->errorForm = $isSubmitted && !$isValid ? $form->getErrors(true, true) : null;
     }
