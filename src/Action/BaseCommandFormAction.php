@@ -75,7 +75,7 @@ class BaseCommandFormAction
 
         $return = new BaseCommandFormActionReturn($command, $form, false);
         $isSubmitted = $form->isSubmitted();
-        $isValid = $form->isValid();
+        $isValid = $isSubmitted ? $form->isValid() : true;
         if ($isSubmitted && $isValid) {
             try {
                 $this->handler->handle($command);
