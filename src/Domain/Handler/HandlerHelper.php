@@ -6,12 +6,12 @@ use Doctrine\ORM\EntityManager;
 use Netosoft\DomainBundle\Domain\CommandInterface;
 use Netosoft\DomainBundle\Domain\Utils\SecurityUtils;
 use Netosoft\DomainBundle\Domain\Utils\ValidatorUtils;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class HandlerHelper
 {
-    /** @var RegistryInterface */
+    /** @var ManagerRegistry */
     private $doctrine;
 
     /** @var ValidatorUtils */
@@ -20,7 +20,7 @@ class HandlerHelper
     /** @var SecurityUtils */
     private $securityUtils;
 
-    public function __construct(RegistryInterface $doctrine, ValidatorUtils $validatorUtils, SecurityUtils $securityUtils)
+    public function __construct(ManagerRegistry $doctrine, ValidatorUtils $validatorUtils, SecurityUtils $securityUtils)
     {
         $this->doctrine = $doctrine;
         $this->validatorUtils = $validatorUtils;
