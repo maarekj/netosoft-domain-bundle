@@ -3,7 +3,7 @@
 namespace Netosoft\DomainBundle\Entity;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Netosoft\DomainBundle\Domain\CommandInterface;
 use Netosoft\DomainBundle\Domain\CommandLoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
