@@ -9,10 +9,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RenderFieldListAction
 {
-    /** @var \Twig_Environment */
+    /** @var \Twig\Environment */
     private $twig;
 
-    public function __construct(\Twig_Environment $twig)
+    public function __construct(\Twig\Environment $twig)
     {
         $this->twig = $twig;
     }

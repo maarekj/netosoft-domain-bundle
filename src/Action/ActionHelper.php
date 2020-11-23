@@ -26,7 +26,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class ActionHelper
 {
-    /** @var \Twig_Environment */
+    /** @var \Twig\Environment */
     private $twig;
 
     /** @var BreadcrumbsBuilderInterface */
@@ -47,7 +47,7 @@ class ActionHelper
     /** @var CsrfTokenManagerInterface */
     private $csrfTokenManager;
 
-    public function __construct(\Twig_Environment $twig, BreadcrumbsBuilderInterface $breadcrumbsBuilder, Pool $pool, TranslatorInterface $translator, FormFactoryInterface $formFactory, Session $session, CsrfTokenManagerInterface $csrfTokenManager)
+    public function __construct(\Twig\Environment $twig, BreadcrumbsBuilderInterface $breadcrumbsBuilder, Pool $pool, TranslatorInterface $translator, FormFactoryInterface $formFactory, Session $session, CsrfTokenManagerInterface $csrfTokenManager)
     {
         $this->twig = $twig;
         $this->breadcrumbsBuilder = $breadcrumbsBuilder;

@@ -30,10 +30,10 @@ class EditFieldFormAction
     /** @var ActionHelper */
     private $helper;
 
-    /** @var \Twig_Environment */
+    /** @var \Twig\Environment */
     private $twig;
 
-    public function __construct(HandlerInterface $handler, LoggerInterface $logger, ActionHelper $helper, ResolverHelper $resolverHelper, \Twig_Environment $twig)
+    public function __construct(HandlerInterface $handler, LoggerInterface $logger, ActionHelper $helper, ResolverHelper $resolverHelper, \Twig\Environment $twig)
     {
         $this->handler = $handler;
         $this->logger = $logger;

@@ -52,7 +52,7 @@ class AdminEditFieldController extends Controller
         return new JsonResponse($content, 200);
     }
 
-    protected function getTwig(): \Twig_Environment
+    protected function getTwig(): \Twig\Environment
     {
         return $this->get('twig');
     }
